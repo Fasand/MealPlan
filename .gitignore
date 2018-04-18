@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Database
+mealplan/db.sqlite3
+
+# vscode
+.vscode
