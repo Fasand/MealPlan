@@ -6,7 +6,8 @@ from django.http import HttpResponse
 # For now, let's stick with the basics.
 
 def index(request):
-    return HttpResponse("This is the index page.")
+    context = {}
+    return render(request, "mealplanner/index.html", context)
 
 def ingredients(request):
     return HttpResponse("This page will contain the user's ingredients.")
