@@ -10,13 +10,17 @@ def index(request):
     return render(request, "mealplanner/index.html", context)
 
 def ingredients(request):
-    return HttpResponse("This page will contain the user's ingredients.")
+    context = {}
+    return render(request, "mealplanner/ingredients.html", context)
 
 def recipes(request):
-    return HttpResponse("This page will contain the user's recipes.")
+    context = {}
+    return render(request, "mealplanner/recipes.html", context)
 
 def inventory(request):
-    return HttpResponse("This page will contain the user's inventory.")
+    context = {}
+    return render(request, "mealplanner/inventory.html", context)
 
 def planner(request):
-    return HttpResponse("This will serve the main purpose: planning your meals.")
+    context = {}
+    return render(request, "mealplanner/planner.html", context)
