@@ -6,6 +6,14 @@ class Category(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
+class Nutrition(models.Model):
+    # More fields can be added in the future,
+    calories = models.FloatField(null=True, blank=True)
+    fat = models.FloatField(null=True, blank=True)
+    carbs = models.FloatField(null=True, blank=True)
+    protein = models.FloatField(null=True, blank=True)
+    # ...
+
 class Ingredient(models.Model):
     # Name of the ingredient, can be rather long if needed
     name = models.CharField(max_length=100)
@@ -26,6 +34,9 @@ class Ingredient(models.Model):
     #unit_aliases
     
     #preferred_unit
-    #nutrition
-    #price
-    #description
+    # Nutrition per 100 g/ml: there will be many possible fields so create a separate model
+    nutrition = models.OneToOneField(Nutrition, on_delete=models.PROTECT)
+    # Price per 100 g/ml
+    price = models.FloatField(blank=True, default=0.0)
+    # Description: either text description or a generated recipe (feature idea)
+    description = models.TextField(blank=True, default="")
