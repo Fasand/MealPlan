@@ -31,7 +31,7 @@ class Unit(models.Model):
     # Shorthand name, e.g. kg, rashers
     shorthand = models.CharField(max_length=20)
     # Ingredient the unit belongs to. If null, it can be used for any ingredient (e.g. kg, oz)
-    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE, null=True)
+    belongs_to_ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE, null=True)
 
 class Ingredient(models.Model):
     # Name of the ingredient, can be rather long if needed
