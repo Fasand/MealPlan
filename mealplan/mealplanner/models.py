@@ -14,6 +14,23 @@ class Nutrition(models.Model):
     protein = models.FloatField(null=True, blank=True)
     # ...
 
+class Unit(models.Model):
+    # Unit type: weight-based or volume-based (G or ML)
+    unit_type = models.CharField(
+        max_length=2,
+        choices=(
+            ("g", "g (weight)"),
+            ("ml", "ml (volume)"),
+        ),
+        default="g"
+    )
+    # How many {unit_type} does this unit equate to
+    value = models.FloatField()
+    # Readable name, e.g. kilograms, rashers (bacon)
+    name = models.CharField(max_length=50)
+    # Shorthand name, e.g. kg, rashers
+    shorthand = models.CharField(max_length=20)
+
 class Ingredient(models.Model):
     # Name of the ingredient, can be rather long if needed
     name = models.CharField(max_length=100)
@@ -30,10 +47,10 @@ class Ingredient(models.Model):
         ),
         default="g"
     )
-    
     #unit_aliases
     
     #preferred_unit
+
     # Nutrition per 100 g/ml: there will be many possible fields so create a separate model
     nutrition = models.OneToOneField(Nutrition, on_delete=models.PROTECT)
     # Price per 100 g/ml
