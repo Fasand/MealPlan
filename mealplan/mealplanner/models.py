@@ -21,7 +21,13 @@ class Nutrition(models.Model):
     # ...
 
     def __str__(self):
-        return str(self.calories)
+        return "{}: {:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
+            self.ingredient.name,
+            self.calories,
+            self.fat,
+            self.carbs,
+            self.protein,
+        )
 
 class Unit(models.Model):
     # Unit type: weight-based or volume-based (G or ML)
@@ -48,7 +54,7 @@ class Unit(models.Model):
     )
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.unit_type)
+        return self.name
 
 class Ingredient(models.Model):
     # Name of the ingredient, can be rather long if needed
@@ -90,7 +96,7 @@ class Inventory(models.Model):
     quantity = models.FloatField()
 
     def __str__(self):
-        return str(self.ingredient)
+        return "{}: {}{}".format(self.ingredient, self.quantity, self.ingredient.unit_type)
 
 class Recipe(models.Model):
     # Name of the recipe
