@@ -53,6 +53,11 @@ class Unit(models.Model):
         null=True,
     )
 
+    def is_ingredient_unit(self):
+        return self.belongs_to_ingredient is not None
+    is_ingredient_unit.boolean = True
+    is_ingredient_unit.short_description = "Ingredient unit?"
+
     def __str__(self):
         return self.name
 
