@@ -3,8 +3,14 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 class Nutrition(models.Model):
     # More fields can be added in the future,
@@ -13,6 +19,9 @@ class Nutrition(models.Model):
     carbs = models.FloatField(null=True, blank=True)
     protein = models.FloatField(null=True, blank=True)
     # ...
+
+    def __str__(self):
+        return str(self.calories)
 
 class Unit(models.Model):
     # Unit type: weight-based or volume-based (G or ML)
@@ -31,7 +40,15 @@ class Unit(models.Model):
     # Shorthand name, e.g. kg, rashers
     shorthand = models.CharField(max_length=20)
     # Ingredient the unit belongs to. If null, it can be used for any ingredient (e.g. kg, oz)
-    belongs_to_ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE, null=True)
+    belongs_to_ingredient = models.ForeignKey(
+        'Ingredient',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.unit_type)
 
 class Ingredient(models.Model):
     # Name of the ingredient, can be rather long if needed
@@ -39,7 +56,7 @@ class Ingredient(models.Model):
     # Category: e.g. vegetables, spices, etc.
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     # Tags: e.g. mexican, spicy
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
     # Unit type: weight-based or volume-based (G or ML)
     unit_type = models.CharField(
         max_length=2,
@@ -50,7 +67,12 @@ class Ingredient(models.Model):
         default="g"
     )
     # Which unit should be provided by default when selecting this ingredient
-    preferred_unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
+    preferred_unit = models.ForeignKey(
+        Unit,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     # Nutrition per 100 g/ml: there will be many possible fields so create a separate model
     nutrition = models.OneToOneField(Nutrition, on_delete=models.PROTECT)
     # Price per 100 g/ml
@@ -58,11 +80,17 @@ class Ingredient(models.Model):
     # Description: either text description or a generated recipe (feature idea)
     description = models.TextField(blank=True, default="")
 
+    def __str__(self):
+        return self.name
+
 class Inventory(models.Model):
     # Ingredient which is in your inventory
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     # Quantity of that ingredient that you have (in unit_type)
     quantity = models.FloatField()
+
+    def __str__(self):
+        return str(self.ingredient)
 
 class Recipe(models.Model):
     # Name of the recipe
@@ -74,7 +102,7 @@ class Recipe(models.Model):
     # Cooking time (in minutes)
     cook_time = models.DurationField()
     # Tags: e.g. mexican, spicy
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
     # Ingredients this recipe composes of
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -83,6 +111,9 @@ class Recipe(models.Model):
     )
     # Directions: can be text for now, maybe change to JSON later
     directions = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 class RecipeIngredient(models.Model):
     # The two foreign keys this is related to
