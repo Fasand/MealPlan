@@ -50,7 +50,7 @@ class Ingredient(models.Model):
     # Category: e.g. vegetables, spices, etc.
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     # Tags: e.g. mexican, spicy
-    tags = models.ManyToManyField(Tag, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     # Unit type: weight-based or volume-based (G or ML)
     unit_type = models.CharField(
         max_length=2,
@@ -115,7 +115,7 @@ class Recipe(models.Model):
     # Cooking time (in minutes)
     cook_time = models.DurationField()
     # Tags: e.g. mexican, spicy
-    tags = models.ManyToManyField(Tag, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     # Ingredients this recipe composes of
     ingredients = models.ManyToManyField(
         Ingredient,
