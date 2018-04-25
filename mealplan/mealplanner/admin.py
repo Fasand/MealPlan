@@ -27,7 +27,6 @@ class IngredientAdmin(admin.ModelAdmin):
     inlines = [NutritionInline]
 
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Nutrition)
 
 admin.site.register(Category)
 admin.site.register(Tag)
