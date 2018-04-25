@@ -18,9 +18,17 @@ admin.site.register(Recipe, RecipeAdmin)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("unit_type", "name", "shorthand", "is_ingredient_unit")
 
+admin.site.register(Unit, UnitAdmin)
+
+class NutritionInline(admin.StackedInline):
+    model = Nutrition
+
+class IngredientAdmin(admin.ModelAdmin):
+    inlines = [NutritionInline]
+
+admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(Nutrition)
+
 admin.site.register(Category)
 admin.site.register(Tag)
-admin.site.register(Nutrition)
-admin.site.register(Unit, UnitAdmin)
-admin.site.register(Ingredient)
 admin.site.register(Inventory)

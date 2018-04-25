@@ -12,23 +12,6 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-class Nutrition(models.Model):
-    # More fields can be added in the future,
-    calories = models.FloatField(null=True, blank=True)
-    fat = models.FloatField(null=True, blank=True)
-    carbs = models.FloatField(null=True, blank=True)
-    protein = models.FloatField(null=True, blank=True)
-    # ...
-
-    def __str__(self):
-        return "{}: {:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
-            self.ingredient.name,
-            self.calories,
-            self.fat,
-            self.carbs,
-            self.protein,
-        )
-
 class Unit(models.Model):
     # Unit type: weight-based or volume-based (G or ML)
     unit_type = models.CharField(
@@ -84,8 +67,6 @@ class Ingredient(models.Model):
         blank=True,
         null=True,
     )
-    # Nutrition per 100 g/ml: there will be many possible fields so create a separate model
-    nutrition = models.OneToOneField(Nutrition, on_delete=models.PROTECT)
     # Price per 100 g/ml
     price = models.FloatField(blank=True, default=0.0)
     # Description: either text description or a generated recipe (feature idea)
@@ -93,6 +74,27 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+class Nutrition(models.Model):
+    # Nutrition per 100 g/ml
+    # More fields can be added in the future,
+    calories = models.FloatField(null=True, blank=True)
+    fat = models.FloatField(null=True, blank=True)
+    carbs = models.FloatField(null=True, blank=True)
+    protein = models.FloatField(null=True, blank=True)
+    # ...
+
+    # Ingredient to which it belongs
+    ingredient = models.OneToOneField(Ingredient, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{}: {:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
+            self.ingredient.name,
+            self.calories,
+            self.fat,
+            self.carbs,
+            self.protein,
+        )
 
 class Inventory(models.Model):
     # Ingredient which is in your inventory
