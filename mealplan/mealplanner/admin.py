@@ -20,11 +20,15 @@ class UnitAdmin(admin.ModelAdmin):
 
 admin.site.register(Unit, UnitAdmin)
 
-class NutritionInline(admin.StackedInline):
+class IngredientUnitsInline(admin.StackedInline):
+    model = Unit
+    extra = 0
+
+class IngredientNutritionInline(admin.StackedInline):
     model = Nutrition
 
 class IngredientAdmin(admin.ModelAdmin):
-    inlines = [NutritionInline]
+    inlines = [IngredientUnitsInline, IngredientNutritionInline]
 
 admin.site.register(Ingredient, IngredientAdmin)
 
