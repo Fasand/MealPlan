@@ -134,5 +134,5 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     # Unit used for display. If null, use base unit_type instead
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
-    # Quantity of the ingredient in terms of its base unit_type
+    # Quantity of the ingredient in terms of the unit specified
     quantity = models.FloatField()
