@@ -88,7 +88,7 @@ class Nutrition(models.Model):
     ingredient = models.OneToOneField(Ingredient, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return "{:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
+        return "{:.0f}kcal, {:.1f}F, {:.1f}C, {:.1f}P".format(
             self.calories,
             self.fat,
             self.carbs,
@@ -96,14 +96,18 @@ class Nutrition(models.Model):
         )
 
     def __add__(self, other):
-        # Should eventually work on a non-specified # of kwargs
-        tot = Nutrition(
-            ingredient = None,
-            calories = self.calories + other.calories,
-            fat = self.fat + other.fat,
-            carbs = self.carbs + other.carbs,
-            protein = self.protein + other.protein,
-        )
+        fields = self._meta.get_fields()
+        # Create a new value dict with added values
+        # Don't add ingredient and id -> would throw an error
+        tot_vals = {
+            f.name: f.value_from_object(self) + f.value_from_object(other)
+            for f in fields if f.name != "ingredient" or f.name != "id"
+        }
+        # Neither is important, so set to equivalent of null
+        tot_vals["id"] = 0
+        tot_vals["ingredient"] = None
+        # Create a new Nutrition from the added values
+        tot = Nutrition(**tot_vals)
         return tot
 
 class Inventory(models.Model):
