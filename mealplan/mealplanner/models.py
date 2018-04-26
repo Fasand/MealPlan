@@ -96,6 +96,10 @@ class Nutrition(models.Model):
         )
 
     def __add__(self, other):
+        # Silently let it go - needed for sum() to work
+        if type(other) is not type(self):
+            return self
+
         fields = self._meta.get_fields()
         # Create a new value dict with added values
         # Don't add ingredient and id -> would throw an error
@@ -109,6 +113,9 @@ class Nutrition(models.Model):
         # Create a new Nutrition from the added values
         tot = Nutrition(**tot_vals)
         return tot
+    
+    def __radd__(self, other):
+        return self.__add__(other)
 
 class Inventory(models.Model):
     # Ingredient which is in your inventory
