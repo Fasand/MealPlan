@@ -85,16 +85,26 @@ class Nutrition(models.Model):
     # ...
 
     # Ingredient to which it belongs
-    ingredient = models.OneToOneField(Ingredient, on_delete=models.CASCADE)
+    ingredient = models.OneToOneField(Ingredient, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return "{}: {:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
-            self.ingredient.name,
+        return "{:.0f}kcal, {:.0f}F, {:.0f}C, {:.0f}P".format(
             self.calories,
             self.fat,
             self.carbs,
             self.protein,
         )
+
+    def __add__(self, other):
+        # Should eventually work on a non-specified # of kwargs
+        tot = Nutrition(
+            ingredient = None,
+            calories = self.calories + other.calories,
+            fat = self.fat + other.fat,
+            carbs = self.carbs + other.carbs,
+            protein = self.protein + other.protein,
+        )
+        return tot
 
 class Inventory(models.Model):
     # Ingredient which is in your inventory
