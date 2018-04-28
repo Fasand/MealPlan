@@ -206,6 +206,11 @@ class Recipe(models.Model):
             nutritions.append(ri.ingredient.nutrition * (ri.unit.value / 100.0) * ri.quantity)
         return sum(nutritions)
 
+    def get_serving_nutrition(self, servings=None):
+        if servings is None:
+            servings = float(self.servings)
+        return self.get_recipe_nutrition() / servings
+
 class RecipeIngredient(models.Model):
     # The two foreign keys this is related to
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
