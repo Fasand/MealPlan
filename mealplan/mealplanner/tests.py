@@ -4,6 +4,8 @@ from .models import Nutrition, Ingredient
 
 class NutritionModelTests(TestCase):
     
+    # Addition
+
     def test_add_two_ingredient_nutritions(self):
         i1 = Ingredient(name="Apple", unit_type="g")
         i2 = Ingredient(name="Orange", unit_type="g")
@@ -14,7 +16,6 @@ class NutritionModelTests(TestCase):
         add = n1 + n2
         radd = n2 + n1
         self.assertEquals(add, radd)
-
 
     def test_add_two_noningredient_nutritions(self):
         n1 = Nutrition(calories=100, fat=10, carbs=5.3, protein=2.1,
@@ -65,6 +66,8 @@ class NutritionModelTests(TestCase):
         with self.assertRaises(TypeError):
             n1 + "yoyoyo"
 
+    # Multiplication
+
     def test_multiply_nutrition_by_nonnumber(self):
         n1 = Nutrition(calories=100, fat=10, carbs=5.3, protein=2.1,
             ingredient=None, id=0)
@@ -93,3 +96,21 @@ class NutritionModelTests(TestCase):
             multiplied = n1 * x
             # Just test for calories, other fields should behave the same
             self.assertEquals(n1.calories * x, multiplied.calories)
+
+    # Division
+
+    def test_divide_nutrition_by_number(self):
+        n1 = Nutrition(calories=250, fat=10, carbs=5.5, protein=10.5,
+            ingredient=None, id=0)
+        n2 = Nutrition(calories=100.0, fat=4.0, carbs=2.2, protein=4.2,
+            ingredient=None, id=0)
+        self.assertEquals(n1 / 2.5, n2)
+        self.assertEquals(n1 / 2.5, n1 * (1/2.5))
+
+    def test_divide_nutrition_by_nonnumber(self):
+        n1 = Nutrition(calories=100, fat=10, carbs=5.3, protein=2.1,
+            ingredient=None, id=0)
+        with self.assertRaises(TypeError):
+            n1 / n1
+        with self.assertRaises(TypeError):
+            n1 / "yoyoyo"

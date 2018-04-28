@@ -131,7 +131,7 @@ class Nutrition(models.Model):
     def __mul__(self, other):
         try:
             other = float(other)
-        except ValueError as e:
+        except ValueError:
             raise TypeError("Nutrition can only be multiplied a number")
         
         # Create a new value dict with added values
@@ -158,6 +158,14 @@ class Nutrition(models.Model):
     
     def __rmul__(self, other):
         return self.__mul__(other)
+
+    def __truediv__(self, other):
+        try:
+            other = float(other)
+        except ValueError:
+            raise TypeError("Nutrition can only be divided a number")
+
+        return self.__mul__(1.0 / other)
 
 class Inventory(models.Model):
     # Ingredient which is in your inventory
