@@ -125,6 +125,37 @@ class Nutrition(models.Model):
     def __radd__(self, other):
         return self.__add__(other)
 
+    def __mul__(self, other):
+        try:
+            other = float(other)
+        except ValueError as e:
+            raise TypeError("Nutrition can only be multiplied a number")
+        
+        # Create a new value dict with added values
+        # Don't multiply ingredient and id -> would throw an error
+        tot_vals = {}
+        for f in self._meta.get_fields():
+            try:
+                multiplied = f.value_from_object(self) * other
+            except TypeError as e:
+                # Ingredients and IDs shouldn't be multiplied
+                if f.name == "ingredient":
+                    multiplied = None
+                elif f.name == "id":
+                    multiplied = 0
+                # All other fields should be fine, so if not, raise error
+                else:
+                    print("field: "+str(f.name))
+                    raise e      
+            tot_vals[f.name] = multiplied
+
+        # Create a new Nutrition from the multiplied values
+        tot = Nutrition(**tot_vals)
+        return tot
+    
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
 class Inventory(models.Model):
     # Ingredient which is in your inventory
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
