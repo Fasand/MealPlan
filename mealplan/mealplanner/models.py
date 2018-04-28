@@ -141,15 +141,16 @@ class Nutrition(models.Model):
             try:
                 multiplied = f.value_from_object(self) * other
             except TypeError as e:
-                # Ingredients and IDs shouldn't be multiplied
-                if f.name == "ingredient":
-                    multiplied = None
-                elif f.name == "id":
-                    multiplied = 0
                 # All other fields should be fine, so if not, raise error
-                else:
+                if f.name not in ["ingredient", "id"]:
                     print("field: "+str(f.name))
                     raise e      
+            # Ingredients and IDs shouldn't be multiplied
+            if f.name == "ingredient":
+                multiplied = None
+            elif f.name == "id":
+                multiplied = 0
+                
             tot_vals[f.name] = multiplied
 
         # Create a new Nutrition from the multiplied values
@@ -198,6 +199,12 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_recipe_nutrition(self):
+        nutritions = []
+        for ri in self.recipeingredient_set.all():
+            nutritions.append(ri.ingredient.nutrition * (ri.unit.value / 100.0) * ri.quantity)
+        return sum(nutritions)
 
 class RecipeIngredient(models.Model):
     # The two foreign keys this is related to

@@ -1,6 +1,8 @@
 from django.test import TestCase
 
-from .models import Nutrition, Ingredient
+from datetime import timedelta
+
+from .models import Nutrition, Ingredient, Recipe, Unit
 
 class NutritionModelTests(TestCase):
     
@@ -97,6 +99,12 @@ class NutritionModelTests(TestCase):
             # Just test for calories, other fields should behave the same
             self.assertEquals(n1.calories * x, multiplied.calories)
 
+    def test_multiply_ingredient_nutrition(self):
+        i1 = Ingredient(name="Orange", unit_type="g", id=1)
+        n1 = Nutrition(calories=300, fat=21.2, carbs=7.3, protein=5.1,
+            ingredient=i1, id=0)
+        self.assertEquals(n1 * 2.0, 2.0 * n1)
+
     # Division
 
     def test_divide_nutrition_by_number(self):
@@ -114,3 +122,39 @@ class NutritionModelTests(TestCase):
             n1 / n1
         with self.assertRaises(TypeError):
             n1 / "yoyoyo"
+
+
+class RecipeModelTests(TestCase):
+
+    def test_get_recipe_nutrition(self):
+        apple = Ingredient(name="Apple", unit_type="g")
+        apple.save()
+        apple_nutrition = Nutrition(calories=99, fat=0, carbs=10.2, protein=0.2,
+            ingredient=Ingredient.objects.get(name__contains="Apple"))
+        apple_nutrition.save()
+        orange = Ingredient(name="Orange", unit_type="g")
+        orange.save()
+        orange_nutrition = Nutrition(calories=120, fat=0.1, carbs=14.2, protein=0.3,
+            ingredient=Ingredient.objects.get(name__contains="Orange"))
+        orange_nutrition.save()
+
+        apples_and_oranges = Recipe(
+            name="Apples and Oranges", servings=1, prep_time = timedelta(minutes=2),
+            cook_time=timedelta(minutes=1), directions="do it")
+        apples_and_oranges.save()
+
+        grams = Unit(unit_type="g", value=1, name="grams", shorthand="g")
+        grams.save()
+
+        apples_and_oranges.recipeingredient_set.create(
+            ingredient=apple, quantity=80.0, unit=Unit.objects.get(name__contains="grams")
+        )
+        apples_and_oranges.recipeingredient_set.create(
+            ingredient=orange, quantity=160.0, unit=Unit.objects.get(name__contains="grams")
+        )
+
+        self.assertEquals(
+            apples_and_oranges.get_recipe_nutrition(),
+            Nutrition(calories=271.2, fat=0.16, carbs=30.88, protein=0.64,
+                ingredient=None, id=0)
+        )
