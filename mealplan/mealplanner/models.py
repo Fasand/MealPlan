@@ -150,7 +150,7 @@ class Nutrition(models.Model):
                 multiplied = None
             elif f.name == "id":
                 multiplied = 0
-                
+
             tot_vals[f.name] = multiplied
 
         # Create a new Nutrition from the multiplied values
@@ -214,3 +214,7 @@ class RecipeIngredient(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
     # Quantity of the ingredient in terms of the unit specified
     quantity = models.FloatField()
+
+    def __str__(self):
+        return "{} - {}: {:.1f} {}".format(self.recipe.name, self.ingredient.name,
+            self.quantity, self.unit.shorthand)
