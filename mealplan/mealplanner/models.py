@@ -96,9 +96,12 @@ class Nutrition(models.Model):
         )
 
     def __add__(self, other):
-        # Silently let it go - needed for sum() to work
         if type(other) is not type(self):
-            return self
+            # Needed for sum() to work
+            if type(other) is int or type(other) is float:
+                return self
+            else:
+                raise TypeError("Nutrition can be added only with other Nutritions")
 
         # Create a new value dict with added values
         # Don't add ingredient and id -> would throw an error
