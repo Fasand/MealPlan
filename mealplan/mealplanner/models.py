@@ -100,16 +100,24 @@ class Nutrition(models.Model):
         if type(other) is not type(self):
             return self
 
-        fields = self._meta.get_fields()
         # Create a new value dict with added values
         # Don't add ingredient and id -> would throw an error
-        tot_vals = {
-            f.name: f.value_from_object(self) + f.value_from_object(other)
-            for f in fields if f.name != "ingredient" or f.name != "id"
-        }
-        # Neither is important, so set to equivalent of null
-        tot_vals["id"] = 0
-        tot_vals["ingredient"] = None
+        tot_vals = {}
+        for f in self._meta.get_fields():
+            try:
+                added = f.value_from_object(self) + f.value_from_object(other)
+            except TypeError as e:
+                # Ingredients and IDs shouldn't be added
+                if f.name == "ingredient":
+                    added = None
+                elif f.name == "id":
+                    added = 0
+                # All other fields should be fine, so if not, raise error
+                else:
+                    print("field: "+str(f.name))
+                    raise e      
+            tot_vals[f.name] = added
+    
         # Create a new Nutrition from the added values
         tot = Nutrition(**tot_vals)
         return tot
