@@ -84,6 +84,7 @@ class Nutrition(models.Model):
     fat_monounsaturated = models.FloatField(null=True, blank=True)
     fat_polyunsaturated = models.FloatField(null=True, blank=True)
     carbs = models.FloatField(null=True, blank=True)
+    sugar = models.FloatField(null=True, blank=True)
     fiber = models.FloatField(null=True, blank=True)
     protein = models.FloatField(null=True, blank=True)
     # ...
