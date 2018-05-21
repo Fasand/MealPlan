@@ -68,6 +68,16 @@ class NutritionModelTests(TestCase):
         with self.assertRaises(TypeError):
             n1 + "yoyoyo"
 
+    def test_add_nutritions_with_none(self):
+        n1 = Nutrition(calories=100, fat=10, carbs=5.3, protein=2.1,
+            ingredient=None, id=1, fat_saturated=2.5)
+        n2 = Nutrition(calories=200, fat=11.2, carbs=5.7, protein=2.1,
+            ingredient=None, id=2, fiber=3.3)
+        n3 = Nutrition(calories=300, fat=21.2, carbs=11, protein=4.2,
+            ingredient=None, id=0, fat_saturated=2.5, fiber=3.3)
+        self.assertEquals(n1 + n2, n3)
+        self.assertEquals(n2 + n1, n3)
+        
     # Multiplication
 
     def test_multiply_nutrition_by_nonnumber(self):

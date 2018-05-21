@@ -115,17 +115,16 @@ class Nutrition(models.Model):
             try:
                 added = f.value_from_object(self) + f.value_from_object(other)
             except TypeError as e:
-                # Ingredients and IDs shouldn't be added
-                if f.name == "ingredient":
-                    added = None
-                elif f.name == "id":
-                    added = 0
-                # All other fields should be fine, so if not, raise error
-                else:
-                    print("field: "+str(f.name))
-                    raise e      
+                # Fields can be None, pick whichever isn't None
+                if f.value_from_object(other) is None:
+                    added = f.value_from_object(self)
+                else: added = f.value_from_object(other)
             tot_vals[f.name] = added
     
+        # Make sure ID and Ingredient aren't added
+        tot_vals["id"] = 0
+        tot_vals["ingredient"] = None
+
         # Create a new Nutrition from the added values
         tot = Nutrition(**tot_vals)
         return tot
@@ -145,18 +144,14 @@ class Nutrition(models.Model):
         for f in self._meta.get_fields():
             try:
                 multiplied = f.value_from_object(self) * other
-            except TypeError as e:
-                # All other fields should be fine, so if not, raise error
-                if f.name not in ["ingredient", "id"]:
-                    print("field: "+str(f.name))
-                    raise e      
-            # Ingredients and IDs shouldn't be multiplied
-            if f.name == "ingredient":
+            except TypeError:
+                # It's ok if it's None
                 multiplied = None
-            elif f.name == "id":
-                multiplied = 0
-
             tot_vals[f.name] = multiplied
+        
+        # Make sure ID and Ingredient aren't multiplied
+        tot_vals["id"] = 0
+        tot_vals["ingredient"] = None
 
         # Create a new Nutrition from the multiplied values
         tot = Nutrition(**tot_vals)
