@@ -228,6 +228,8 @@ class Recipe(models.Model):
             servings = float(self.servings)
         return self.get_recipe_nutrition() / servings
 
+    get_serving_nutrition.short_description = "Nutrition per serving"
+
 
 class RecipeIngredient(models.Model):
     # The two foreign keys this is related to
