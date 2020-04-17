@@ -38,6 +38,34 @@ VOLUME_CONVERSION = {
 }
 
 
+def print_nutrient_usage():
+    df = pd.read_csv(FOOD_NUTRIENT)
+    nutrients = pd.read_csv(NUTRIENT)
+    num_ingredients = len(df['fdc_id'].unique())
+    # Compute number of occurences
+    nutrients['num'] = [len(df[df['nutrient_id'] == nutrient['id']])
+                        for nutrient in nutrients.iloc]
+    nutrients['percentage'] = (nutrients['num'] / num_ingredients) * 100.0
+    # Sort by percentage
+    nutrients.sort_values('percentage', ascending=False, inplace=True)
+
+    for nutrient in nutrients.iloc:
+        num = nutrient['num']
+        percentage = nutrient['percentage']
+        if percentage == 100:
+            sign = 'XXX'
+        elif percentage > 80:
+            sign = ' * '
+        elif percentage > 10:
+            sign = ' - '
+        else:
+            sign = ''
+        if num > 0:
+            print(f"{sign:^3} ({percentage:>4.1f}) {num:<4} "
+                  f"– {nutrient['id']} {nutrient['name']}")
+    return nutrients
+
+
 def import_categories():
     df = pd.read_csv(FOOD_CATEGORY,
                      usecols=['id', 'description'])
@@ -62,10 +90,16 @@ def import_ingredients():
 def import_nutrients():
     df = pd.read_csv(FOOD_NUTRIENT,
                      usecols=['fdc_id', 'nutrient_id', 'amount'])
-    for nutrient in df.iloc:
-        usda_fdc_id = nutrient['fdc_id']
-        nutrient_id = nutrient['nutrient_id']
-        amount = nutrient['amount']
+    # Iterate through ingredients
+    for fdc_id in df['fdc_id'].unique():  # count 6659
+        nutrients = df[df['fdc_id'] == fdc_id]
+        # TODO: get the ingredient using fdc_id
+
+        for nutrient in nutrients.iloc:
+            nutrient_id = nutrient['nutrient_id']
+            amount = nutrient['amount']
+            if nutrient_id == 1002:
+                ingredient.nitrogen = amount
 
 
 def import_portions():
@@ -94,7 +128,7 @@ def import_portions():
             density = (max_volume['gram_weight'] / volume_in_ml) * 1000.0
         # Only import the specific non-volume portion units
         non_volume = portions[~volume_selector]
-        for portion in non_volume:
+        for portion in non_volume.iloc:
             usda_id = portion['id']
             amount = portion['amount']
             modifier = portion['modifier']
@@ -105,3 +139,5 @@ def import_portions():
                 title = modifier
             amount_in_base = portion['gram_weight']
             # TODO: create IngredientUnit (unit_type=weight, unit_system=metric)
+        if density is not None:
+            print(density)
