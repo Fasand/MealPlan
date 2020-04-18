@@ -1,4 +1,5 @@
 import os
+import re
 import pandas as pd
 from django.conf import settings
 
@@ -38,7 +39,7 @@ VOLUME_CONVERSION = {
 }
 
 
-def print_nutrient_usage():
+def load_nutrient_definitions():
     df = pd.read_csv(FOOD_NUTRIENT)
     nutrients = pd.read_csv(NUTRIENT)
     num_ingredients = len(df['fdc_id'].unique())
@@ -46,6 +47,46 @@ def print_nutrient_usage():
     nutrients['num'] = [len(df[df['nutrient_id'] == nutrient['id']])
                         for nutrient in nutrients.iloc]
     nutrients['percentage'] = (nutrients['num'] / num_ingredients) * 100.0
+    return nutrients
+
+
+def print_nutrient_fields(sort_by='id'):
+    nutrients = load_nutrient_definitions()
+    # Get non-null and sort by name
+    nutrients[nutrients['percentage'] != 0].sort_values(sort_by, inplace=True)
+
+    for nutrient in nutrients.iloc:
+        nutrient_id = nutrient['id']
+        name = nutrient['name']
+        unit_name = nutrient['unit_name']
+        # Clean up the nutrient name for a variable name
+        var_name = name.lower().strip()
+        # Variables can't start with a number, all numbered are acids
+        if var_name[0].isnumeric():
+            var_name = 'acid_' + var_name
+        # Perform a couple of substitutions
+        for regex, sub in [
+            (r'[(),+]', ''),    # remove parentheses and commas
+            (r'\s+', ' '),      # combine adjacent spaces into one
+            (r'[:\-\s/]', '_'),  # replace bad characters with underscores
+        ]:
+            var_name = re.sub(regex, sub, var_name)
+        # Make sure it is now a valid variable name
+        if not var_name.isidentifier():
+            raise Exception(f"'{var_name}' is not a valid identifier")
+        # Combine into a model field definition
+        line = (
+            f"# {nutrient_id} {unit_name}\n"
+            f"{var_name} = models.FloatField(\n"
+            f"\t_('{name}'),\n"
+            f"\tnull=True, blank=True)"
+        )
+        print(line)
+
+
+def print_nutrient_usage():
+    df = pd.read_csv(FOOD_NUTRIENT)
+    nutrients = load_nutrient_definitions()
     # Sort by percentage
     nutrients.sort_values('percentage', ascending=False, inplace=True)
 
