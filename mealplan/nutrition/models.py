@@ -471,3 +471,7 @@ class Nutrition(BaseModel):
         _('trans-Lycopene'), null=True, blank=True)
     cryptoxanthin_alpha = models.FloatField(                       # 2032 UG
         _('Cryptoxanthin, alpha'), null=True, blank=True)
+
+    class Meta():
+        verbose_name = _('Nutrition')
+        verbose_name_plural = _('Nutrition')

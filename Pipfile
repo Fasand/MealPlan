@@ -9,6 +9,8 @@ verify_ssl = true
 django = "~=2.2"
 pandas = "~=1.0"
 autopep8 = "*"
+django-modeltranslation = "*"
+django-private-storage = "*"
 
 [requires]
 python_version = "3.7"

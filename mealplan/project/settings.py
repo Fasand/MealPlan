@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Keep local settings private
 # Includes: SECRET_KEY, TIME_ZONE
@@ -34,6 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 3rd-party
+    'modeltranslation',
+    'private_storage',
+    # Project apps
     'core',
     'utils',
     'ingredients',
@@ -72,16 +77,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+SESSION_COOKIE_NAME = 'session_mealplan'
+
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# TODO: change to PostgreSQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'encor',
+#         'USER': 'encor',
+#         'PASSWORD': 'encor',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
@@ -106,16 +125,68 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
 USE_I18N = True
-
 USE_L10N = True
+LANGUAGE_CODE = 'en'
+LANGUAGES = [
+    ('en', _('English')),
+    # ('cs', _('Czech')),
+]
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+LANGUAGE_COOKIE_NAME = 'mealplan_language'
 
+# Model Translation
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+
+TIME_ZONE = 'Europe/Prague'
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Private media storage
+
+PRIVATE_STORAGE_URL = 'private/'
+PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media-private')
+# TODO: change to account for user-specific access
+PRIVATE_STORAGE_AUTH_FUNCTION = 'core.permissions.allow_authenticated'
+
+# Login
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Email setup
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_DEBUG = True
+EMAIL_HOST = 'localhost'
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'MealPlan <info@mealplan.com>'
+SERVER_EMAIL = 'MealPlan <info@mealplan.com>'
+
+# Django REST Framework
+
+REST_FRAMEWORK = {
+    # All REST pages must be authenticated
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+}
