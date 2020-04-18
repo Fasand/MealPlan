@@ -3,6 +3,12 @@ import re
 import pandas as pd
 from django.conf import settings
 
+from ingredients.models import (
+    Ingredient, IngredientCategory, IngredientUnit
+)
+from ingredients import constants as ingredient_constants
+from nutrition.models import Nutrition
+
 
 PROJECT_DIR = os.path.split(settings.BASE_DIR)[0]
 USDA_DIR = os.path.join(PROJECT_DIR, 'usda_sr_legacy')
@@ -125,42 +131,21 @@ def print_nutrient_usage():
 
 
 def import_categories():
+    """ Imports all USDA categories, create IngredientCategory """
     df = pd.read_csv(FOOD_CATEGORY,
                      usecols=['id', 'description'])
+    categories_created = 0
     for category in df.iloc:
-        usda_id = category['id']
-        title = category['description']
-        print(usda_id, title)
-        # TODO: create IngredientCategory
+        obj, created = IngredientCategory.objects.get_or_create(
+            title=category['description'],
+            usda_id=category['id'],
+        )
+        categories_created += created
+    print(f"Ingredient categories imported, total new: {categories_created}")
 
 
-def import_ingredients():
-    df = pd.read_csv(FOOD,
-                     usecols=['fdc_id', 'description', 'food_category_id'])
-    for ingredient in df.iloc:
-        usda_fdc_id = ingredient['fdc_id']
-        title = ingredient['description']
-        category_usda_id = ingredient['food_category_id']
-        # TODO: find category by usda_id, must exist! (if not, throw error)
-        # TODO: create Ingredient
-
-
-def import_nutrients():
-    df = pd.read_csv(FOOD_NUTRIENT,
-                     usecols=['fdc_id', 'nutrient_id', 'amount'])
-    # Iterate through ingredients
-    for fdc_id in df['fdc_id'].unique():  # count 6659
-        nutrients = df[df['fdc_id'] == fdc_id]
-        # TODO: get the ingredient using fdc_id
-
-        for nutrient in nutrients.iloc:
-            nutrient_id = nutrient['nutrient_id']
-            amount = nutrient['amount']
-            if nutrient_id == 1002:
-                ingredient.nitrogen = amount
-
-
-def import_portions():
+def import_ingredient_units():
+    """ Import all USDA ingredient units after Ingredients have been created """
     df = pd.read_csv(FOOD_PORTION,
                      usecols=['id', 'fdc_id', 'amount',
                               'modifier', 'gram_weight'])
@@ -169,8 +154,10 @@ def import_portions():
     # Drop amount=0 rows, mostly useless
     df.drop(df.loc[df['amount'] == 0].index, inplace=True)
     # Iterate through ingredients
+    units_created = 0
     for fdc_id in df['fdc_id'].unique():  # count 6659
-        # TODO: get the ingredient using fdc_id
+        # Get the Ingredient using fdc_id
+        ingredient = Ingredient.objects.get(usda_fdc_id=fdc_id)
         portions = df[df['fdc_id'] == fdc_id]
         # Single out volume-based units
         volume_selector = portions['modifier'].isin(VOLUME_CONVERSION.keys())
@@ -196,6 +183,61 @@ def import_portions():
             else:
                 title = modifier
             amount_in_base = portion['gram_weight']
-            # TODO: create IngredientUnit (unit_type=weight, unit_system=metric)
+            # Create IngredientUnit
+            unit, created = IngredientUnit.objects.get_or_create(
+                ingredient=ingredient,
+                title=title,
+                unit_type=ingredient_constants.UNIT_TYPE_WEIGHT,
+                unit_system=ingredient_constants.UNIT_SYSTEM_CUSTOM,
+                usda_id=usda_id,
+                amount_in_base=amount_in_base,
+            )
+            units_created += created
+        # Save density to the ingredient if it was computed
         if density is not None:
-            print(density)
+            ingredient.density = density
+            ingredient.save()
+        print(f"Ingredient units imported, total new: {units_created}")
+
+
+def import_ingredients():
+    """ Import all USDA SR ingredients, create Ingredient """
+    # Categories must be imported before importing ingredients
+    import_categories()
+    # Load nutrition definitions and values
+    nutrient_definitions = load_nutrient_definitions()
+    food_nutrients = pd.read_csv(
+        FOOD_NUTRIENT, usecols=['fdc_id', 'nutrient_id', 'amount'])
+    # Load ingredients and iterate through each
+    ingredients = pd.read_csv(
+        FOOD, usecols=['fdc_id', 'description', 'food_category_id'])
+    ingredients_created = 0
+    for ingredient in ingredients.iloc:
+        usda_fdc_id = ingredient['fdc_id']
+        title = ingredient['description']
+        # Find category by usda_id, must exist! (if not, throw error)
+        category = IngredientCategory.objects.get(
+            usda_id=ingredient['food_category_id'])
+        # Create Ingredient with the essential information
+        ingredient, created = Ingredient.get_or_create(
+            usda_fdc_id=usda_fdc_id,
+            title=title,
+            category=category,
+        )
+        ingredients_created += created
+        # Create Nutrition
+        nutrition = Nutrition(ingredient=ingredient)
+        # Get nutrients for the specific Ingredient
+        nutrients = food_nutrients[food_nutrients['fdc_id'] == usda_fdc_id]
+        for nutrient in nutrients.iloc:
+            nutrient_id = nutrient['nutrient_id']
+            amount = nutrient['amount']
+            nutrient_var_name = nutrient_definitions[
+                nutrient_definitions['id'] == nutrient_id
+            ][0]['var_name']
+            # Set each nutrient
+            setattr(nutrition, nutrient_var_name, amount)
+        nutrition.save()
+    # Ingredient units are imported once all Ingredients have been created
+    import_ingredient_units()
+    print(f"Ingredients imported, total new: {ingredients_created}")

@@ -30,11 +30,12 @@ class Ingredient(BaseModel):
                                  related_query_name='ingredient',
                                  null=True, blank=True)
     tags = models.TextField(_('tags'),
-                            blank=True, null=True)
+                            blank=True)
     image = PrivateFileField(_('image'),
                              upload_to=ingredient_image_path,
                              content_types=ALLOWED_IMAGE_MIME_TYPES,
-                             max_file_size=MAX_IMAGE_FILE_SIZE)
+                             max_file_size=MAX_IMAGE_FILE_SIZE,
+                             null=True, blank=True)
     usda_fdc_id = models.PositiveIntegerField(_('usda fdc id'),
                                               null=True, blank=True)
     density = models.FloatField(_('density'),
@@ -61,7 +62,8 @@ class IngredientCategory(BaseModel):
     image = PrivateFileField(_('image'),
                              upload_to=ingredient_category_image_path,
                              content_types=ALLOWED_IMAGE_MIME_TYPES,
-                             max_file_size=MAX_IMAGE_FILE_SIZE)
+                             max_file_size=MAX_IMAGE_FILE_SIZE,
+                             null=True, blank=True)
     usda_id = models.PositiveIntegerField(_('usda id'),
                                           null=True, blank=True)
 
@@ -81,11 +83,12 @@ class IngredientUnit(BaseModel):
     title = models.CharField(_('title'),
                              max_length=128)
     shorthand = models.CharField(_('shorthand'),
-                                 max_length=16)
+                                 max_length=16,
+                                 blank=True)
     unit_type = models.CharField(_('unit type'),
                                  max_length=16,
                                  choices=constants.UNIT_TYPES)
-    # Custom means it's a user-created unit
+    # Custom means it's a user-created unit, or e.g. USDA units
     unit_system = models.CharField(_('unit system'),
                                    max_length=16,
                                    choices=constants.UNIT_SYSTEMS,
