@@ -15,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # Keep local settings private
 # Includes: SECRET_KEY, TIME_ZONE
+# TODO: local settings are overriden by base settings !!!
 from .local_settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -165,6 +166,7 @@ PRIVATE_STORAGE_AUTH_FUNCTION = 'core.permissions.allow_authenticated'
 
 # Login
 
+AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
