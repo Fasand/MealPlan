@@ -34,8 +34,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mealplanner',
+    'core',
     'utils',
+    'ingredients',
+    'nutrition',
+    'recipes',
+    'mealplanner',
 ]
 
 MIDDLEWARE = [

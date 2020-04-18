@@ -1,8 +1,13 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from core.models import BaseModel
 
-class Nutrition(models.Model):
+
+class Nutrition(BaseModel):
+    """
+    All values are per 100g of ingredient
+    """
     ingredient = models.OneToOneField(
         'ingredients.Ingredient',
         on_delete=models.CASCADE,
