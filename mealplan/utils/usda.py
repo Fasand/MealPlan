@@ -39,6 +39,25 @@ VOLUME_CONVERSION = {
 }
 
 
+def get_nutrient_variable_name(name):
+    ''' Clean up the nutrient name for a variable name '''
+    var_name = name.lower().strip()
+    # Variables can't start with a number, all numbered are acids
+    if var_name[0].isnumeric():
+        var_name = 'acid_' + var_name
+    # Perform a couple of substitutions
+    for regex, sub in [
+        (r'[(),+]', ''),    # remove parentheses and commas
+        (r'\s+', ' '),      # combine adjacent spaces into one
+        (r'[:\-\s/]', '_'),  # replace bad characters with underscores
+    ]:
+        var_name = re.sub(regex, sub, var_name)
+    # Make sure it is now a valid variable name
+    if not var_name.isidentifier():
+        raise Exception(f"'{var_name}' is not a valid identifier")
+    return var_name
+
+
 def load_nutrient_definitions():
     df = pd.read_csv(FOOD_NUTRIENT)
     nutrients = pd.read_csv(NUTRIENT)
@@ -47,39 +66,37 @@ def load_nutrient_definitions():
     nutrients['num'] = [len(df[df['nutrient_id'] == nutrient['id']])
                         for nutrient in nutrients.iloc]
     nutrients['percentage'] = (nutrients['num'] / num_ingredients) * 100.0
+    # Generate the variable name used for field definition
+    nutrients['var_name'] = [get_nutrient_variable_name(n)
+                             for n in nutrients['name']]
     return nutrients
 
 
-def print_nutrient_fields(sort_by='id'):
+def print_nutrient_fields(sort_by='id', include_null=True):
     nutrients = load_nutrient_definitions()
-    # Get non-null and sort by name
-    nutrients[nutrients['percentage'] != 0].sort_values(sort_by, inplace=True)
+    # Filter only non-null if specified
+    if not include_null:
+        nutrients = nutrients[nutrients['percentage'] != 0]
+    nutrients.sort_values(sort_by, inplace=True)
+
+    max_unit_len = max(map(len, nutrients['unit_name']))
+    max_var_len = max(map(len, nutrients['var_name']))
+    field_len = len(" = models.FloatField(")
+    comment_len = 2 + 5 + max_unit_len
+    definition_len = max_var_len + field_len
 
     for nutrient in nutrients.iloc:
         nutrient_id = nutrient['id']
         name = nutrient['name']
         unit_name = nutrient['unit_name']
-        # Clean up the nutrient name for a variable name
-        var_name = name.lower().strip()
-        # Variables can't start with a number, all numbered are acids
-        if var_name[0].isnumeric():
-            var_name = 'acid_' + var_name
-        # Perform a couple of substitutions
-        for regex, sub in [
-            (r'[(),+]', ''),    # remove parentheses and commas
-            (r'\s+', ' '),      # combine adjacent spaces into one
-            (r'[:\-\s/]', '_'),  # replace bad characters with underscores
-        ]:
-            var_name = re.sub(regex, sub, var_name)
-        # Make sure it is now a valid variable name
-        if not var_name.isidentifier():
-            raise Exception(f"'{var_name}' is not a valid identifier")
+        var_name = nutrient['var_name']
+
         # Combine into a model field definition
+        comment = f"# {nutrient_id} {unit_name}"
         line = (
-            f"# {nutrient_id} {unit_name}\n"
-            f"{var_name} = models.FloatField(\n"
-            f"\t_('{name}'),\n"
-            f"\tnull=True, blank=True)"
+            f"{(var_name + ' = models.FloatField(').ljust(definition_len)} "
+            f"{comment.ljust(comment_len)}\n"
+            f"\t_('{name}'), null=True, blank=True)"
         )
         print(line)
 
