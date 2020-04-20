@@ -87,6 +87,7 @@ class SectionDirection(BaseModel):
     description = models.TextField(_('description'))
     duration = models.DurationField(_('duration'), null=True, blank=True)
     duration_type = models.CharField(_('duration type'),
+                                     max_length=16,
                                      choices=constants.DURATION_TYPES,
                                      blank=True)
     image = PrivateImageField(_('image'),

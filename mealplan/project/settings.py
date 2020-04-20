@@ -145,7 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PRIVATE_STORAGE_URL = 'private/'
 PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media-private')
 # TODO: change to account for user-specific access
-PRIVATE_STORAGE_AUTH_FUNCTION = 'core.permissions.allow_authenticated'
+PRIVATE_STORAGE_AUTH_FUNCTION = 'private_storage.permissions.allow_authenticated'
 
 # Login
 
