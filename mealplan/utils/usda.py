@@ -155,7 +155,12 @@ def import_ingredient_units():
     df.drop(df.loc[df['amount'] == 0].index, inplace=True)
     # Iterate through ingredients
     units_created = 0
-    for fdc_id in df['fdc_id'].unique():  # count 6659
+    total_ingredients = len(df['fdc_id'].unique())
+    for i, fdc_id in enumerate(df['fdc_id'].unique()):  # count 6659
+        # Print progress
+        if i % 100 == 0:
+            print(
+                f"Units imported: {i:>5} / {total_ingredients} (ingredients)")
         # Get the Ingredient using fdc_id
         ingredient = Ingredient.objects.get(usda_fdc_id=fdc_id)
         portions = df[df['fdc_id'] == fdc_id]
@@ -212,7 +217,11 @@ def import_ingredients():
     ingredients = pd.read_csv(
         FOOD, usecols=['fdc_id', 'description', 'food_category_id'])
     ingredients_created = 0
-    for ingredient in ingredients.iloc:
+    total_ingredients = len(ingredients)
+    for i, ingredient in enumerate(ingredients.iloc):
+        # Print progress
+        if i % 100 == 0:
+            print(f"Ingredients imported: {i:>5} / {total_ingredients}")
         usda_fdc_id = ingredient['fdc_id']
         title = ingredient['description']
         # Find category by usda_id, must exist! (if not, throw error)
