@@ -24,7 +24,7 @@ class Ingredient(BaseModel):
     title = models.CharField(_('title'),
                              max_length=128)
     description = models.TextField(_('description'),
-                                   blank=True, null=True)
+                                   blank=True)
     category = models.ForeignKey('ingredients.IngredientCategory',
                                  on_delete=models.SET_NULL,
                                  related_name='ingredients',
