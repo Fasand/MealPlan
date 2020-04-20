@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from core.admin import BaseModelAdmin
+from nutrition.admin import NutritionInline
 from .models import (
     Ingredient, IngredientCategory, IngredientUnit,
 )
@@ -9,6 +10,9 @@ from .models import (
 @admin.register(Ingredient)
 class IngredientAdmin(BaseModelAdmin):
     list_display = ('title', 'category', 'density', 'usda_fdc_id', 'user')
+    inlines = [
+        NutritionInline,
+    ]
 
 
 @admin.register(IngredientCategory)

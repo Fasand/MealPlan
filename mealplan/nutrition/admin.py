@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from core.admin import BaseModelStackedInline
+from .models import Nutrition
+
+
+class NutritionInline(BaseModelStackedInline):
+    model = Nutrition
