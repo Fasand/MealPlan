@@ -219,7 +219,7 @@ def import_ingredients():
         category = IngredientCategory.objects.get(
             usda_id=ingredient['food_category_id'])
         # Create Ingredient with the essential information
-        ingredient, created = Ingredient.get_or_create(
+        ingredient, created = Ingredient.objects.get_or_create(
             usda_fdc_id=usda_fdc_id,
             title=title,
             category=category,
@@ -234,7 +234,7 @@ def import_ingredients():
             amount = nutrient['amount']
             nutrient_var_name = nutrient_definitions[
                 nutrient_definitions['id'] == nutrient_id
-            ][0]['var_name']
+            ].iloc[0]['var_name']
             # Set each nutrient
             setattr(nutrition, nutrient_var_name, amount)
         nutrition.save()

@@ -30,7 +30,7 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
-        if not self.id:
+        if not self.pk:
             self.created = timezone.now()
         self.modified = timezone.now()
         return super(BaseModel, self).save(*args, **kwargs)

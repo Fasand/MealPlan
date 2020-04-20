@@ -22,7 +22,7 @@ class Ingredient(BaseModel):
                              related_query_name='ingredient',
                              null=True, blank=True)
     title = models.CharField(_('title'),
-                             max_length=128)
+                             max_length=160)
     description = models.TextField(_('description'),
                                    blank=True)
     category = models.ForeignKey('ingredients.IngredientCategory',
