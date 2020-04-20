@@ -37,8 +37,9 @@ class Recipe(BaseModel):
     # TODO: replace with the first available section ingredient on delete
     scaling_ingredient = models.OneToOneField(
         'recipes.SectionIngredient',
-        on_delete=models.PROTECT,
-        related_name='scaled_recipe')
+        on_delete=models.SET_NULL,
+        related_name='scaled_recipe',
+        null=True, blank=True)
 
 
 class RecipeSection(BaseModel):
@@ -107,3 +108,6 @@ class PreparationMethod(BaseModel):
         _('metric size'), max_length=64, blank=True)
     imperial_size = models.CharField(
         _('imperial size'), max_length=64, blank=True)
+
+    def __str__(self):
+        return self.title
