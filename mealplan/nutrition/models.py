@@ -475,3 +475,76 @@ class Nutrition(BaseModel):
     class Meta():
         verbose_name = _('Nutrition')
         verbose_name_plural = _('Nutrition')
+
+    # TODO: implement mathematical operations
+    """
+    def __add__(self, other):
+        if type(other) is not type(self):
+            # Needed for sum() to work
+            if type(other) is int or type(other) is float:
+                return self
+            else:
+                raise TypeError("Nutrition can be added "
+                                "only with other Nutritions")
+
+        # Create a new value dict with added values
+        # Don't add ingredient and id -> would throw an error
+        tot_vals = {}
+        for f in self._meta.get_fields():
+            try:
+                added = f.value_from_object(self) + f.value_from_object(other)
+            except TypeError as e:
+                # Fields can be None, pick whichever isn't None
+                if f.value_from_object(other) is None:
+                    added = f.value_from_object(self)
+                else:
+                    added = f.value_from_object(other)
+            tot_vals[f.name] = added
+
+        # Make sure ID and Ingredient aren't added
+        tot_vals["id"] = 0
+        tot_vals["ingredient"] = None
+
+        # Create a new Nutrition from the added values
+        tot = Nutrition(**tot_vals)
+        return tot
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __mul__(self, other):
+        try:
+            other = float(other)
+        except ValueError:
+            raise TypeError("Nutrition can only be multiplied a number")
+
+        # Create a new value dict with added values
+        # Don't multiply ingredient and id -> would throw an error
+        tot_vals = {}
+        for f in self._meta.get_fields():
+            try:
+                multiplied = f.value_from_object(self) * other
+            except TypeError:
+                # It's ok if it's None
+                multiplied = None
+            tot_vals[f.name] = multiplied
+
+        # Make sure ID and Ingredient aren't multiplied
+        tot_vals["id"] = 0
+        tot_vals["ingredient"] = None
+
+        # Create a new Nutrition from the multiplied values
+        tot = Nutrition(**tot_vals)
+        return tot
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        try:
+            other = float(other)
+        except ValueError:
+            raise TypeError("Nutrition can only be divided a number")
+
+        return self.__mul__(1.0 / other)
+    """
