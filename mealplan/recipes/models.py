@@ -34,9 +34,10 @@ class Recipe(BaseModel):
                                      null=True, blank=True)
     notes = models.TextField(_('notes'), blank=True)
     # This ingredient will correspond to 100% in the recipe
+    # TODO: replace with the first available section ingredient on delete
     scaling_ingredient = models.OneToOneField(
         'recipes.SectionIngredient',
-        on_delete=models.PROTECT,  # TODO
+        on_delete=models.PROTECT,
         related_name='scaled_recipe')
 
 
@@ -57,14 +58,20 @@ class SectionIngredient(BaseModel):
                                    on_delete=models.PROTECT,  # TODO
                                    related_name='in_recipes',
                                    related_query_name='in_recipe')
-    preparation_method = None  # todo
+    # Suggestions given from PreparationMethod
+    preparation_method = models.CharField(_('preparation method'),
+                                          max_length=64)
     amount = models.FloatField(_('amount'))
-    # TODO: Should be recalculated to a different unit on delete
+    # TODO: Should be recalculated to a different unit on delete (signal)
+    # https://stackoverflow.com/questions/36571834/django-pass-self-to-models-set-on-delete
+    # TODO: Can I validate that unit belongs to user or is base?
     unit = models.ForeignKey('ingredients.IngredientUnit',
                              on_delete=models.PROTECT,  # TODO
                              related_name='section_ingredients',
                              related_query_name='section_ingredient')
     optional = models.BooleanField(_('optional'), default=False)
+
+# TODO: implement SectionRecipe (so that recipes can act as ingredients)
 
 
 def section_direction_image_path(instance, filename):
@@ -79,8 +86,23 @@ class SectionDirection(BaseModel):
                                 related_query_name='direction')
     description = models.TextField(_('description'))
     duration = models.DurationField(_('duration'), null=True, blank=True)
-    duration_type = None  # TODO
+    duration_type = models.CharField(_('duration type'),
+                                     choices=constants.DURATION_TYPES,
+                                     blank=True)
     image = PrivateImageField(_('image'),
                               upload_to=section_direction_image_path,
                               null=True, blank=True)
     optional = models.BooleanField(_('optional'), default=False)
+
+# TODO: implement IngredientSubstitution
+# TODO: implement DirectionSubstitution
+# TODO: implement RecipeVariation
+
+
+class PreparationMethod(BaseModel):
+    title = models.CharField(_('title'), max_length=64)
+    description = models.TextField(_('description'), blank=True)
+    metric_size = models.CharField(
+        _('metric size'), max_length=64, blank=True)
+    imperial_size = models.CharField(
+        _('imperial size'), max_length=64, blank=True)
