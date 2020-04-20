@@ -12,6 +12,7 @@ class RecipeSectionInline(BaseModelTabularInline):
     fields = (
         'title',
     )
+    show_change_link = True
 
 
 @admin.register(Recipe)
@@ -19,6 +20,25 @@ class RecipeAdmin(BaseModelAdmin):
     inlines = [
         RecipeSectionInline,
     ]
+
+
+class SectionIngredientInline(BaseModelTabularInline):
+    model = SectionIngredient
+    autocomplete_fields = ('ingredient', 'unit')
+
+
+class SectionDirectionInline(BaseModelTabularInline):
+    model = SectionDirection
+
+
+@admin.register(RecipeSection)
+class RecipeSectionAdmin(BaseModelAdmin):
+    fields = ('title',)
+    inlines = [
+        SectionIngredientInline,
+        SectionDirectionInline,
+    ]
+    list_display = ('recipe', 'title')
 
 
 @admin.register(PreparationMethod)

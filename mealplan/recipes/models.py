@@ -41,6 +41,9 @@ class Recipe(BaseModel):
         related_name='scaled_recipe',
         null=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class RecipeSection(BaseModel):
     recipe = models.ForeignKey('recipes.Recipe',
@@ -48,6 +51,9 @@ class RecipeSection(BaseModel):
                                related_name='sections',
                                related_query_name='section')
     title = models.CharField(_('title'), max_length=128)
+
+    def __str__(self):
+        return f"{self.recipe} | {self.title}"
 
 
 class SectionIngredient(BaseModel):
@@ -72,6 +78,9 @@ class SectionIngredient(BaseModel):
                              related_query_name='section_ingredient')
     optional = models.BooleanField(_('optional'), default=False)
 
+    def __str__(self):
+        return f"{self.ingredient}, {self.amount} {self.unit}"
+
 # TODO: implement SectionRecipe (so that recipes can act as ingredients)
 
 
@@ -95,6 +104,9 @@ class SectionDirection(BaseModel):
                               upload_to=section_direction_image_path,
                               null=True, blank=True)
     optional = models.BooleanField(_('optional'), default=False)
+
+    def __str__(self):
+        return f"{self.description}"
 
 # TODO: implement IngredientSubstitution
 # TODO: implement DirectionSubstitution
