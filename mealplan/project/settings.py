@@ -84,24 +84,13 @@ SESSION_COOKIE_NAME = 'session_mealplan'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# TODO: change to PostgreSQL
+# PostgreSQL set up in local_settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'encor',
-#         'USER': 'encor',
-#         'PASSWORD': 'encor',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
 
 
 # Password validation
