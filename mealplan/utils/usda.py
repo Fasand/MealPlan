@@ -202,7 +202,7 @@ def import_ingredient_units():
         if density is not None:
             ingredient.density = density
             ingredient.save()
-        print(f"Ingredient units imported, total new: {units_created}")
+    print(f"Ingredient units imported, total new: {units_created}")
 
 
 def import_ingredients():

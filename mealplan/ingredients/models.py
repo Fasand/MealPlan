@@ -42,6 +42,9 @@ class Ingredient(BaseModel):
 
     # nutrition is added through a OneToOne relationship from Nutrition
 
+    def __str__(self):
+        return f"{self.title}"
+
     class Meta():
         verbose_name = _('Ingredient')
         verbose_name_plural = _('Ingredients')
@@ -63,6 +66,9 @@ class IngredientCategory(BaseModel):
                               null=True, blank=True)
     usda_id = models.PositiveIntegerField(_('usda id'),
                                           null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.title}"
 
     class Meta():
         verbose_name = _('Ingredient Category')
@@ -94,6 +100,9 @@ class IngredientUnit(BaseModel):
                                           null=True, blank=True)
     # Base is "gram" for unit_type=weight, "mililiter" for unit_type=volume
     amount_in_base = models.FloatField(_('amount in base unit'))
+
+    def __str__(self):
+        return f"{self.title}" + (" (I)" if self.ingredient else '')
 
     class Meta():
         verbose_name = _('Unit')

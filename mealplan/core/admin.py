@@ -2,4 +2,4 @@ from django.contrib import admin
 
 
 class BaseModelAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ('created', 'created_by', 'modified', 'modified_by')
