@@ -13,4 +13,5 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', include('core.urls', namespace='core')),
+    prefix_default_language=False,  # Don't display 'en/'
 )
