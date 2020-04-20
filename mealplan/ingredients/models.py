@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from private_storage.fields import PrivateFileField
 
 from core.models import BaseModel
+from core.fields import PrivateImageField
 from core.constants import (ALLOWED_IMAGE_MIME_TYPES, MAX_IMAGE_FILE_SIZE)
 from . import constants
 
@@ -31,11 +32,9 @@ class Ingredient(BaseModel):
                                  null=True, blank=True)
     tags = models.TextField(_('tags'),
                             blank=True)
-    image = PrivateFileField(_('image'),
-                             upload_to=ingredient_image_path,
-                             content_types=ALLOWED_IMAGE_MIME_TYPES,
-                             max_file_size=MAX_IMAGE_FILE_SIZE,
-                             null=True, blank=True)
+    image = PrivateImageField(_('image'),
+                              upload_to=ingredient_image_path,
+                              null=True, blank=True)
     usda_fdc_id = models.PositiveIntegerField(_('usda fdc id'),
                                               null=True, blank=True)
     density = models.FloatField(_('density'),
@@ -59,11 +58,9 @@ class IngredientCategory(BaseModel):
     description = models.CharField(_('description'),
                                    max_length=128,
                                    blank=True)
-    image = PrivateFileField(_('image'),
-                             upload_to=ingredient_category_image_path,
-                             content_types=ALLOWED_IMAGE_MIME_TYPES,
-                             max_file_size=MAX_IMAGE_FILE_SIZE,
-                             null=True, blank=True)
+    image = PrivateImageField(_('image'),
+                              upload_to=ingredient_category_image_path,
+                              null=True, blank=True)
     usda_id = models.PositiveIntegerField(_('usda id'),
                                           null=True, blank=True)
 
