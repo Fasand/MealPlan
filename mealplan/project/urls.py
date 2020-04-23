@@ -13,5 +13,6 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', include('core.urls', namespace='core')),
+    path('', include('frontend.urls', namespace='frontend')),
     prefix_default_language=False,  # Don't display 'en/'
 )
