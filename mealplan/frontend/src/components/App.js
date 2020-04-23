@@ -1,11 +1,6 @@
 import React, { Fragment, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import Dashboard from "./Dashboard";
 
@@ -17,7 +12,7 @@ import Header from "./layout/Header";
 import Alerts from "./layout/Alerts";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
-// import Register from './accounts/Register';
+import Register from "./auth/Register";
 import PrivateRoute from "./common/PrivateRoute";
 
 import { Provider } from "react-redux";
@@ -47,6 +42,7 @@ export const App = (props) => {
               <Switch>
                 <PrivateRoute exact path="/" component={Dashboard} />
                 <Route exact path="/logout" component={Logout} />
+                <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
               </Switch>
             </div>
