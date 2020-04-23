@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # Project apps
     'core',
     'utils',
+    'frontend',
     'ingredients',
     'nutrition',
     'recipes',
