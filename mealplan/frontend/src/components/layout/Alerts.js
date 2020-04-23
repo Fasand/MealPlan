@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import { useAlert } from "react-alert";
 import { useSelector } from "react-redux";
 
-const Alerts = (props) => {
+const Alerts = (_) => {
   const error = useSelector((state) => state.errors);
   const message = useSelector((state) => state.messages);
   const alert = useAlert();

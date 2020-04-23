@@ -6,12 +6,15 @@ from .api import RegisterAPI, LoginAPI, UserAPI
 app_name = 'core'
 
 
-urlpatterns = [
-    # path('api/auth/', include('knox.urls')),
-    path('api/auth/register/', RegisterAPI.as_view()),
-    path('api/auth/login/', LoginAPI.as_view()),
-    path('api/auth/user/', UserAPI.as_view()),
-    path('api/auth/logout/',
+auth_urls = [
+    path('register/', RegisterAPI.as_view()),
+    path('login/', LoginAPI.as_view()),
+    path('user/', UserAPI.as_view()),
+    path('logout/',
          knox_views.LogoutView.as_view(),
          name='knox_logout'),
+]
+
+urlpatterns = [
+    path('auth/', include(auth_urls))
 ]
