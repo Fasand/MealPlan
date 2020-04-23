@@ -8,7 +8,7 @@ import { Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 
 import Header from "./layout/Header";
-// import Dashboard from './leads/Dashboard';
+import Ingredients from "./ingredients/Ingredients";
 import Alerts from "./layout/Alerts";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
@@ -41,6 +41,11 @@ export const App = (props) => {
             <div className="container">
               <Switch>
                 <PrivateRoute exact path="/" component={Dashboard} />
+                <PrivateRoute
+                  exact
+                  path="/ingredients"
+                  component={Ingredients}
+                />
                 <Route exact path="/logout" component={Logout} />
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />

@@ -53,6 +53,15 @@ const Header = (_) => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          {isAuthenticated && (
+            <ul className="navbar-nav mt-2 mt-lg-0">
+              <li className="nav-item">
+                <Link to="/ingredients" className="nav-link">
+                  Ingredients
+                </Link>
+              </li>
+            </ul>
+          )}
           <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
             {!isLoading && (isAuthenticated ? authLinks : guestLinks)}
           </ul>
