@@ -13,7 +13,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
 };
 
 export default function (state = initialState, action) {

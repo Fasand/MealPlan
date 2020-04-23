@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
 import {
   HashRouter as Router,
@@ -9,13 +9,14 @@ import {
 
 import Dashboard from "./Dashboard";
 
-// import { Provider as AlertProvider } from 'react-alert';
-// import AlertTemplate from 'react-alert-template-basic';
+import { Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 
 import Header from "./layout/Header";
 // import Dashboard from './leads/Dashboard';
-// import Alerts from './layout/Alerts';
+import Alerts from "./layout/Alerts";
 import Login from "./auth/Login";
+import Logout from "./auth/Logout";
 // import Register from './accounts/Register';
 import PrivateRoute from "./common/PrivateRoute";
 
@@ -24,31 +25,34 @@ import store from "../store";
 import { loadUser } from "../actions/auth";
 
 // Alert Options
-// const alertOptions = {
-//   timeout: 3000,
-//   position: 'top center',
-// };
+const alertOptions = {
+  timeout: 3000,
+  position: "top center",
+};
 
 export const App = (props) => {
   // Load the user on component mount
-  useEffect(() => {
+  useLayoutEffect(() => {
     store.dispatch(loadUser());
   }, []);
 
   return (
     <Provider store={store}>
-      <Router>
-        <Fragment>
-          <Header />
-          <div className="container">
-            <h1>Hello from React</h1>
-            <Switch>
-              <PrivateRoute exact path="/" component={Dashboard} />
-              <Route exact path="/login" component={Login} />
-            </Switch>
-          </div>
-        </Fragment>
-      </Router>
+      <AlertProvider template={AlertTemplate} {...alertOptions}>
+        <Router>
+          <Fragment>
+            <Header />
+            <Alerts />
+            <div className="container">
+              <Switch>
+                <PrivateRoute exact path="/" component={Dashboard} />
+                <Route exact path="/logout" component={Logout} />
+                <Route exact path="/login" component={Login} />
+              </Switch>
+            </div>
+          </Fragment>
+        </Router>
+      </AlertProvider>
     </Provider>
   );
 };

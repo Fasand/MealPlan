@@ -3,15 +3,16 @@ import { Route, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const auth = useSelector((state) => state.auth);
+  const isLoading = useSelector((state) => state.auth.isLoading);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (auth.isLoading) {
+        if (isLoading) {
           return <h2>Loading...</h2>;
-        } else if (!auth.isAuthenticated) {
+        } else if (!isAuthenticated) {
           return <Redirect to="/login" />;
         } else {
           return <Component {...props} />;

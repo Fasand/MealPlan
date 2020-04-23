@@ -16,21 +16,27 @@ import {
 export const loadUser = () => (dispatch, getState) => {
   // User Loading
   dispatch({ type: USER_LOADING });
-  console.log("load user")
-  axios
-    .get("/api/auth/user", tokenConfig(getState))
-    .then((res) => {
-      dispatch({
-        type: USER_LOADED,
-        payload: res.data,
+  // Only try to load user if a token is saved
+  if (getState().auth.token)
+    axios
+      .get("/api/auth/user/", tokenConfig(getState))
+      .then((res) => {
+        dispatch({
+          type: USER_LOADED,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+        dispatch({
+          type: AUTH_ERROR,
+        });
       });
-    })
-    .catch((err) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
-      dispatch({
-        type: AUTH_ERROR,
-      });
+  else {
+    dispatch({
+      type: AUTH_ERROR,
     });
+  }
 };
 
 // LOGIN USER
@@ -46,7 +52,7 @@ export const login = (username, password) => (dispatch) => {
   const body = JSON.stringify({ username, password });
 
   axios
-    .post("/api/auth/login", body, config)
+    .post("/api/auth/login/", body, config)
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -74,7 +80,7 @@ export const register = ({ username, password, email }) => (dispatch) => {
   const body = JSON.stringify({ username, email, password });
 
   axios
-    .post("/api/auth/register", body, config)
+    .post("/api/auth/register/", body, config)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -105,20 +111,11 @@ export const logout = () => (dispatch, getState) => {
 
 // Setup config with token - helper function
 export const tokenConfig = (getState) => {
-  // Get token from state
+  const config = { headers: { "Content-Type": "application/json" } };
+
+  // Add authorization token if it exists
   const token = getState().auth.token;
-
-  // Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  // If token, add to headers config
-  if (token) {
-    config.headers["Authorization"] = `Token ${token}`;
-  }
+  if (token) config.headers["Authorization"] = `Token ${token}`;
 
   return config;
 };
