@@ -12,6 +12,8 @@ pandas = "~=1.0"
 django-modeltranslation = "*"
 django-private-storage = "*"
 psycopg2-binary = "*"
+django-rest-knox = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.7"
