@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { login } from "../../actions/auth";
 import { useSelector, useDispatch } from "react-redux";
+import { Button } from "antd";
 
 const Login = (props) => {
   const [username, setUsername] = useState("");
@@ -42,9 +43,10 @@ const Login = (props) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button type="submit" className="btn btn-primary">
+            <Button type="primary">Logins</Button>
+            {/* <button type="submit" className="btn btn-primary">
               Login
-            </button>
+            </button> */}
             <p className="pt-2">
               Don't have an account? <Link to="/register">Register</Link>
             </p>
