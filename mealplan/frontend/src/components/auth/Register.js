@@ -3,18 +3,14 @@ import { Link, Redirect } from "react-router-dom";
 import { register } from "../../actions/auth";
 import { createMessage } from "../../actions/messages";
 import { useSelector, useDispatch } from "react-redux";
+import { Card, Form, Input, Button, Row, Col } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 const Register = (props) => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
-
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onFinish = ({ username, email, password, password2 }) => {
     if (password !== password2) {
       dispatch(createMessage({ passwordNotMatch: "Passwords do not match" }));
     } else {
@@ -30,59 +26,81 @@ const Register = (props) => {
   if (isAuthenticated) return <Redirect to="/" />;
   else
     return (
-      <div className="col-md-6 m-auto">
-        <div className="card card-body mt-5">
-          <h2 className="text-center">Register</h2>
-          <form onSubmit={onSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password2">Password again</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password2"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Register
-            </button>
-            <p className="pt-2">
-              Already have an account? <Link to="/login">Login</Link>
-            </p>
-          </form>
-        </div>
-      </div>
+      <Row justify="center">
+        <Col span={10}>
+          <Card style={{ marginTop: "3rem" }}>
+            <h2 className="text-center">Register</h2>
+            <Form onFinish={onFinish}>
+              <Form.Item
+                name="username"
+                rules={[
+                  { required: true, message: "Please input your username" },
+                ]}>
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Username"
+                />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: "Please input your email" },
+                  { type: "email" },
+                ]}>
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Email"
+                />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your password" },
+                ]}>
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="password2"
+                dependencies={["password"]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password again",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        "The two passwords that you entered do not match!"
+                      );
+                    },
+                  }),
+                ]}>
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="Password again"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button">
+                  Register
+                </Button>
+              </Form.Item>
+              <p>
+                Already have an account? <Link to="/login">Login</Link>
+              </p>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
     );
 };
 

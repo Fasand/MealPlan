@@ -1,6 +1,6 @@
 import React, { Fragment, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch, Link } from "react-router-dom";
 
 import Dashboard from "./Dashboard";
 
@@ -19,6 +19,8 @@ import { Provider } from "react-redux";
 import store from "../store";
 import { loadUser } from "../actions/auth";
 
+import { Layout, Menu } from "antd";
+
 // Alert Options
 const alertOptions = {
   timeout: 3000,
@@ -35,10 +37,12 @@ export const App = (props) => {
     <Provider store={store}>
       <AlertProvider template={AlertTemplate} {...alertOptions}>
         <Router>
-          <Fragment>
-            <Header />
-            <Alerts />
-            <div className="container">
+          <Layout style={{ minHeight: "100vh" }}>
+            <Layout.Header>
+              <Header />
+            </Layout.Header>
+            <Layout.Content>
+              <Alerts />
               <Switch>
                 <PrivateRoute exact path="/" component={Dashboard} />
                 <PrivateRoute
@@ -50,8 +54,9 @@ export const App = (props) => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
               </Switch>
-            </div>
-          </Fragment>
+            </Layout.Content>
+            <Layout.Footer>MealPlan</Layout.Footer>
+          </Layout>
         </Router>
       </AlertProvider>
     </Provider>

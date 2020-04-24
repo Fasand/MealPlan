@@ -2,57 +2,60 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { login } from "../../actions/auth";
 import { useSelector, useDispatch } from "react-redux";
-import { Button } from "antd";
+import { Card, Form, Input, Button, Row, Col } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
-const Login = (props) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
+const Login = (_) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onFinish = ({ username, password }) => {
     dispatch(login(username, password));
   };
 
   if (isAuthenticated) return <Redirect to="/" />;
   else
     return (
-      <div className="col-md-6 m-auto">
-        <div className="card card-body mt-5">
-          <h2 className="text-center">Login</h2>
-          <form onSubmit={onSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <Button type="primary">Logins</Button>
-            {/* <button type="submit" className="btn btn-primary">
-              Login
-            </button> */}
-            <p className="pt-2">
-              Don't have an account? <Link to="/register">Register</Link>
-            </p>
-          </form>
-        </div>
-      </div>
+      <Row justify="center">
+        <Col span={10}>
+          <Card style={{ marginTop: "3rem" }}>
+            <h2 className="text-center">Login</h2>
+            <Form onFinish={onFinish}>
+              <Form.Item
+                name="username"
+                rules={[
+                  { required: true, message: "Please input your username" },
+                ]}>
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Username"
+                />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your password" },
+                ]}>
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button">
+                  Log in
+                </Button>
+              </Form.Item>
+              <p>
+                Don't have an account? <Link to="/register">Register</Link>
+              </p>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
     );
 };
 
