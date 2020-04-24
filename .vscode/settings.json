@@ -1,0 +1,5 @@
+{
+  "python.envFile": "${workspaceRoot}/.env",
+  "python.venvPath": "/Users/fasand/.local/share/virtualenvs/mealplan-xUsW7iT_/",
+  "python.pythonPath": "/Users/fasand/.local/share/virtualenvs/mealplan-xUsW7iT_/bin/python"
+}

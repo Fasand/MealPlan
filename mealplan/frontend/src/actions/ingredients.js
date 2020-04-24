@@ -18,7 +18,22 @@ export const getIngredients = () => (dispatch, getState) => {
         payload: res.data,
       });
     })
-    .catch((err) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
-    });
+    .catch((err) =>
+      dispatch(returnErrors(err.response.data, err.response.status))
+    );
+};
+
+export const createIngredient = (ingredient) => (dispatch, getState) => {
+  axios
+    .post("/api/ingredients/", ingredient, tokenConfig(getState))
+    .then((res) => {
+      dispatch(createMessage({ text: "Ingredient created" }));
+      dispatch({
+        type: CREATE_INGREDIENT,
+        payload: res.data,
+      });
+    })
+    .catch((err) =>
+      dispatch(returnErrors(err.response.data, err.response.status))
+    );
 };
