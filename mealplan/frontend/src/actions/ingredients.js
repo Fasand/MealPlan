@@ -1,15 +1,16 @@
 import axios from "axios";
-import { returnErrors } from "./messages";
+import { returnError } from "../utils/errors";
 import { tokenConfig } from "./auth";
+import { message } from "antd";
 import {
   GET_INGREDIENTS,
   GET_INGREDIENT,
   CREATE_INGREDIENT,
   DELETE_INGREDIENT,
+  GET_INGREDIENT_CATEGORIES,
 } from "./types";
 
 export const getIngredients = () => (dispatch, getState) => {
-  // TODO: dispatch loading
   axios
     .get("/api/ingredients/", tokenConfig(getState))
     .then((res) => {
@@ -18,22 +19,30 @@ export const getIngredients = () => (dispatch, getState) => {
         payload: res.data,
       });
     })
-    .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
-    );
+    .catch((err) => returnError(err.response.data, err.response.status));
 };
 
 export const createIngredient = (ingredient) => (dispatch, getState) => {
   axios
     .post("/api/ingredients/", ingredient, tokenConfig(getState))
     .then((res) => {
-      dispatch(createMessage({ text: "Ingredient created" }));
+      message.success("Ingredient created");
       dispatch({
         type: CREATE_INGREDIENT,
         payload: res.data,
       });
     })
-    .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
-    );
+    .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const getIngredientCategories = () => (dispatch, getState) => {
+  axios
+    .get("/api/ingredient-categories/", tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: GET_INGREDIENT_CATEGORIES,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
 };

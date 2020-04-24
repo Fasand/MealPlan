@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import { register } from "../../actions/auth";
-import { createMessage } from "../../actions/messages";
 import { useSelector, useDispatch } from "react-redux";
-import { Card, Form, Input, Button, Row, Col } from "antd";
+import { Card, Form, Input, Button, Row, Col, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 const Register = (props) => {
@@ -12,7 +11,7 @@ const Register = (props) => {
 
   const onFinish = ({ username, email, password, password2 }) => {
     if (password !== password2) {
-      dispatch(createMessage({ passwordNotMatch: "Passwords do not match" }));
+      message.error("Passwords do not match");
     } else {
       const newUser = {
         username,

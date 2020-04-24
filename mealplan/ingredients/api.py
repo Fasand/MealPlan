@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from .models import IngredientCategory
 from .serializers import (IngredientSerializer, IngredientCategorySerializer)
 
 # TODO BIG: create a BaseModelViewSet which updates created_by, modified_by
@@ -18,3 +19,4 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 class IngredientCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientCategorySerializer
+    queryset = IngredientCategory.objects.all()

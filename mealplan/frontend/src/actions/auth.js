@@ -1,5 +1,5 @@
 import axios from "axios";
-import { returnErrors } from "./messages";
+import { returnError } from "../utils/errors";
 
 import {
   USER_LOADED,
@@ -27,7 +27,7 @@ export const loadUser = () => (dispatch, getState) => {
         });
       })
       .catch((err) => {
-        dispatch(returnErrors(err.response.data, err.response.status));
+        returnError(err.response.data, err.response.status);
         dispatch({
           type: AUTH_ERROR,
         });
@@ -60,7 +60,7 @@ export const login = (username, password) => (dispatch) => {
       });
     })
     .catch((err) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      returnError(err.response.data, err.response.status);
       dispatch({
         type: LOGIN_FAIL,
       });
@@ -88,7 +88,7 @@ export const register = ({ username, password, email }) => (dispatch) => {
       });
     })
     .catch((err) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      returnError(err.response.data, err.response.status);
       dispatch({
         type: REGISTER_FAIL,
       });
@@ -105,7 +105,7 @@ export const logout = () => (dispatch, getState) => {
       });
     })
     .catch((err) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      returnError(err.response.data, err.response.status);
     });
 };
 
