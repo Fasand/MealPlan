@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import (Ingredient, IngredientCategory, IngredientUnit)
+from nutrition.models import Nutrition
 from nutrition.serializers import NutritionSerializer
 
 
@@ -17,9 +18,16 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    nutrition = NutritionSerializer()
-    category = IngredientCategorySerializer()
-    units = serializers.ListField(IngredientUnitSerializer)
+    nutrition = NutritionSerializer(required=False)
+    category = IngredientCategorySerializer(required=False)
+    units = IngredientUnitSerializer(many=True)
+
+    def create(self, validated_data):
+        ingredient = Ingredient.objects.create(**validated_data)
+        # Create an empty nutrition if none supplied
+        if validated_data.get('nutrition') is None:
+            Nutrition.objects.create(ingredient=ingredient)
+        return ingredient
 
     class Meta:
         model = Ingredient
