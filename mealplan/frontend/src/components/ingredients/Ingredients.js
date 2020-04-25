@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getIngredients } from "../../actions/ingredients";
 import CreateForm from "./CreateForm";
 import { Row, Col, Collapse } from "antd";
+import IngredientsTable from "./IngredientsTable";
 
 const Ingredients = (_) => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const Ingredients = (_) => {
           </Collapse>
         </Col>
       </Row>
+      <IngredientsTable />
     </div>
   );
 };

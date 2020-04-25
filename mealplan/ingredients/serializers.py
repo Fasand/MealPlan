@@ -19,7 +19,8 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     nutrition = NutritionSerializer(required=False)
-    category = IngredientCategorySerializer(required=False)
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=IngredientCategory.objects.all(), required=False)
     units = IngredientUnitSerializer(many=True)
 
     def create(self, validated_data):
@@ -32,6 +33,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = (
-            'user', 'title', 'description', 'category', 'tags', 'image',
+            'id', 'user', 'title', 'description', 'category', 'tags', 'image',
             'usda_fdc_id', 'density', 'nutrition', 'units',
         )
