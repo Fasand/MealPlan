@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { createRecipe, updateRecipe } from "../../actions/recipes";
-import { Form, Input, Button, Select } from "antd";
+import { Form, Input, Button, Select, Row, Col } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const RecipeForm = ({ recipe }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,9 @@ const RecipeForm = ({ recipe }) => {
   };
 
   const onFinish = (values) => {
+    console.log(values);
+    return;
+
     // Strip tags of whitespace
     if (values.tags)
       values.tags = values.tags.map((tag) => tag.trim()).join(",");
@@ -43,6 +47,81 @@ const RecipeForm = ({ recipe }) => {
       <Form.Item label="Tags" name="tags">
         <Select mode="tags" tokenSeparators={[","]}></Select>
       </Form.Item>
+      <h3>Sections</h3>
+      <Form.List name="sections" wrapperCol={{ span: 24 }}>
+        {(sections, { add: addSection, remove: removeSection }) => (
+          <div>
+            {sections.map((section) => (
+              <div key={section.key}>
+                <Form.Item
+                  label="Title"
+                  name={[section.name, "title"]}
+                  key={[section.key, "title"]}
+                  fieldKey={[section.fieldKey, "title"]}>
+                  <Input />
+                </Form.Item>
+                <Form.List
+                  label="Ingredients"
+                  key={[section.key, "ingredients"]}
+                  name={[section.name, "ingredients"]}
+                  fieldKey={[section.fieldKey, "ingredients"]}>
+                  {(
+                    ingredients,
+                    { add: addIngredient, remove: removeIngredient }
+                  ) => (
+                    <div>
+                      {ingredients.map((ingredient) => (
+                        <div key={[section.key, ingredient.key]}>
+                          <Form.Item
+                            label="Ingredient title"
+                            key={[section.key, ingredient.key, "title"]}
+                            fieldKey={[
+                              section.fieldKey,
+                              ingredient.fieldKey,
+                              "title",
+                            ]}
+                            name={[ingredient.name, "title"]}>
+                            <Input />
+                          </Form.Item>
+                          {ingredients.length > 1 && (
+                            <MinusCircleOutlined
+                              style={{ margin: "0 8px" }}
+                              onClick={() => removeIngredient(ingredient.name)}
+                            />
+                          )}
+                        </div>
+                      ))}
+                      <Form.Item wrapperCol={{ span: 24 }}>
+                        <Button
+                          type="dashed"
+                          onClick={() => addIngredient()}
+                          style={{ width: "100%" }}>
+                          <PlusOutlined /> Add ingredient
+                        </Button>
+                      </Form.Item>
+                    </div>
+                  )}
+                </Form.List>
+                {sections.length > 1 && (
+                  <MinusCircleOutlined
+                    style={{ margin: "0 8px" }}
+                    onClick={() => removeSection(section.name)}
+                  />
+                )}
+              </div>
+            ))}
+            <Form.Item wrapperCol={{ span: 24 }}>
+              <Button
+                type="dashed"
+                onClick={() => addSection()}
+                style={{ width: "100%" }}>
+                <PlusOutlined /> Add section
+              </Button>
+            </Form.Item>
+          </div>
+        )}
+      </Form.List>
+
       <Form.Item {...formTailLayout}>
         <Button type="primary" htmlType="submit">
           {recipe ? "Update" : "Create"}
