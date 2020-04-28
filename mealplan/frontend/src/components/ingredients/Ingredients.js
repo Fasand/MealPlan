@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getIngredients } from "../../actions/ingredients";
+import {
+  getIngredients,
+  getIngredientCategories,
+} from "../../actions/ingredients";
 import IngredientForm from "./IngredientForm";
 import { Row, Col, Collapse } from "antd";
 import IngredientsTable from "./IngredientsTable";
@@ -10,8 +13,10 @@ const Ingredients = (_) => {
 
   useEffect(() => {
     dispatch(getIngredients());
+    dispatch(getIngredientCategories());
   }, []);
 
+  const categories = useSelector((state) => state.ingredients.categories);
   const ingredients = useSelector((state) => state.ingredients.ingredients);
 
   return (
@@ -21,12 +26,12 @@ const Ingredients = (_) => {
         <Col span={12}>
           <Collapse defaultActiveKey={1}>
             <Collapse.Panel header="Create ingredient" key="1">
-              <IngredientForm />
+              <IngredientForm categories={categories} />
             </Collapse.Panel>
           </Collapse>
         </Col>
       </Row>
-      <IngredientsTable />
+      <IngredientsTable ingredients={ingredients} categories={categories} />
     </div>
   );
 };

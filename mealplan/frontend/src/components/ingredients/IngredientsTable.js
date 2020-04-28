@@ -1,14 +1,9 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Table, Tag } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
-const IngredientsTable = (_) => {
-  const dispatch = useDispatch();
-  const ingredients = useSelector((state) => state.ingredients.ingredients);
-  const categories = useSelector((state) => state.ingredients.categories);
-
+const IngredientsTable = ({ ingredients, categories }) => {
   const columns = [
     {
       title: "Title",

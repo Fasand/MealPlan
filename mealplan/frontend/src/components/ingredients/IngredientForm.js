@@ -1,18 +1,10 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  getIngredientCategories,
-  createIngredient,
-  updateIngredient,
-} from "../../actions/ingredients";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { createIngredient, updateIngredient } from "../../actions/ingredients";
 import { Form, Input, Button, Select } from "antd";
 
-const IngredientForm = ({ ingredient } = { ingredient: null }) => {
+const IngredientForm = ({ ingredient, categories }) => {
   const dispatch = useDispatch();
-  const categories = useSelector((state) => state.ingredients.categories);
-  useEffect(() => {
-    dispatch(getIngredientCategories());
-  }, []);
 
   const formLayout = {
     labelCol: { span: 8 },
