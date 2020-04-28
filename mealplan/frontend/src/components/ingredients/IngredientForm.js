@@ -31,6 +31,8 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
     // Strip tags of whitespace
     if (values.tags)
       values.tags = values.tags.map((tag) => tag.trim()).join(",");
+    // Category is nullable but undefined doesn't do anything
+    if (values.category === undefined) values.category = null;
     // Update or create
     if (ingredient) {
       dispatch(updateIngredient(ingredient.id, values));
@@ -39,8 +41,16 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
 
   // TODO: tags should be loaded from previously created ingredients
 
+  const initialValues = ingredient
+    ? {
+        ...ingredient,
+        // Category must be a string to be auto-selected
+        category: ingredient.category && String(ingredient.category),
+      }
+    : {};
+
   return (
-    <Form onFinish={onFinish} {...formLayout} initialValues={ingredient}>
+    <Form onFinish={onFinish} {...formLayout} initialValues={initialValues}>
       <Form.Item label="Title" name="title">
         <Input />
       </Form.Item>
@@ -48,7 +58,12 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
         <Input.TextArea />
       </Form.Item>
       <Form.Item label="Category" name="category">
-        <Select showSearch>
+        <Select
+          showSearch
+          allowClear
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }>
           {categories.map((category) => (
             <Select.Option key={category.id}>{category.title}</Select.Option>
           ))}

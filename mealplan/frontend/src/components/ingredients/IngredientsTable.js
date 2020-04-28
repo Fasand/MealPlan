@@ -24,7 +24,13 @@ const IngredientsTable = (_) => {
       title: "Category",
       dataIndex: "category",
       key: "category",
-      render: (category) => <p>{category || "Uncategorized"}</p>,
+      render: (category) => (
+        <p>
+          {category
+            ? categories.find((c) => c.id == category).title
+            : "Uncategorized"}
+        </p>
+      ),
     },
     {
       title: "Tags",
