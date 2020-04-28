@@ -18,7 +18,7 @@ const Recipes = (_) => {
     <div>
       <h1>Recipes</h1>
       <Row justify="center">
-        <Col span={12}>
+        <Col span={24}>
           <Collapse defaultActiveKey={1}>
             <Collapse.Panel header="Create recipe" key="1">
               <RecipeForm />
