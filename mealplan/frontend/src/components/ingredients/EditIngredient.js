@@ -14,8 +14,11 @@ const EditIngredient = (_) => {
     dispatch(getIngredient(id));
   }, []);
 
-  if (ingredient) return <IngredientForm ingredient={ingredient} />;
-  else return <Loading />;
+  return (
+    <Loading until={ingredient}>
+      <IngredientForm ingredient={ingredient} />
+    </Loading>
+  );
 };
 
 export default EditIngredient;

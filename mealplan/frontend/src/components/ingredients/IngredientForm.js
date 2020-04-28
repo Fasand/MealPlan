@@ -11,7 +11,6 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
   const categories = useSelector((state) => state.ingredients.categories);
   useEffect(() => {
     dispatch(getIngredientCategories());
-    console.log(ingredient);
   }, []);
 
   const formLayout = {
