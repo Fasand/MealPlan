@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Tag } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const IngredientsTable = (_) => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const IngredientsTable = (_) => {
       render: (tags) => (
         <span>
           {tags.length > 0 &&
-            tags.split(",").map((tag) => {
+            tags.map((tag) => {
               let color = tag.length > 5 ? "geekblue" : "green";
               if (tag === "loser") {
                 color = "volcano";
@@ -50,9 +51,9 @@ const IngredientsTable = (_) => {
       title: "Action",
       key: "action",
       render: (text, record) => (
-        <span>
+        <Link to={`/ingredients/${record.id}/edit`}>
           <EditOutlined />
-        </span>
+        </Link>
       ),
     },
   ];

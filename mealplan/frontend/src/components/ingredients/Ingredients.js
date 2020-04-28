@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getIngredients } from "../../actions/ingredients";
-import CreateForm from "./CreateForm";
+import IngredientForm from "./IngredientForm";
 import { Row, Col, Collapse } from "antd";
 import IngredientsTable from "./IngredientsTable";
 
@@ -19,9 +19,9 @@ const Ingredients = (_) => {
       <h1>Ingredients</h1>
       <Row justify="center">
         <Col span={12}>
-          <Collapse>
+          <Collapse defaultActiveKey={1}>
             <Collapse.Panel header="Create ingredient" key="1">
-              <CreateForm />
+              <IngredientForm />
             </Collapse.Panel>
           </Collapse>
         </Col>

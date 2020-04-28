@@ -22,6 +22,18 @@ export const getIngredients = () => (dispatch, getState) => {
     .catch((err) => returnError(err.response.data, err.response.status));
 };
 
+export const getIngredient = (id) => (dispatch, getState) => {
+  axios
+    .get(`/api/ingredients/${id}`, tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: GET_INGREDIENT,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
+};
+
 export const createIngredient = (ingredient) => (dispatch, getState) => {
   axios
     .post("/api/ingredients/", ingredient, tokenConfig(getState))

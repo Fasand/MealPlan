@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 
 import Header from "./layout/Header";
 import Ingredients from "./ingredients/Ingredients";
+import EditIngredient from "./ingredients/EditIngredient";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Register from "./auth/Register";
@@ -40,6 +41,11 @@ export const App = (props) => {
             <Switch>
               <PrivateRoute exact path="/" component={Dashboard} />
               <PrivateRoute exact path="/ingredients" component={Ingredients} />
+              <PrivateRoute
+                exact
+                path="/ingredients/:id/edit"
+                component={EditIngredient}
+              />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />

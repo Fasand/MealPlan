@@ -8,6 +8,7 @@ import {
 
 const initialState = {
   ingredients: [],
+  ingredient: null,
   categories: [],
 };
 
@@ -17,6 +18,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ingredients: action.payload,
+      };
+    case GET_INGREDIENT:
+      return {
+        ...state,
+        ingredient: action.payload,
       };
     case CREATE_INGREDIENT:
       return {
