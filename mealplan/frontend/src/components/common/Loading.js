@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 
-const Loading = ({ until, delay = 0, size = "default", children } = {}) => {
+const Loading = ({ until, children, ...props } = {}) => {
   const indicator = <LoadingOutlined />;
 
   if (children) {
     return (
-      <Spin spinning={!until} delay={delay} size={size} indicator={indicator}>
+      <Spin {...props} spinning={!until} indicator={indicator}>
         {until ? children : <div style={{ padding: "2rem" }}></div>}
       </Spin>
     );
@@ -23,6 +23,7 @@ const Loading = ({ until, delay = 0, size = "default", children } = {}) => {
           backgroundColor: "rgba(255,255,255,0.3)",
         }}>
         <Spin
+          {...props}
           indicator={indicator}
           size="large"
           style={{ display: "block", margin: "30% auto" }}
