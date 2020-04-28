@@ -6,6 +6,7 @@ import {
   GET_INGREDIENTS,
   GET_INGREDIENT,
   CREATE_INGREDIENT,
+  UPDATE_INGREDIENT,
   DELETE_INGREDIENT,
   GET_INGREDIENT_CATEGORIES,
 } from "./types";
@@ -24,7 +25,7 @@ export const getIngredients = () => (dispatch, getState) => {
 
 export const getIngredient = (id) => (dispatch, getState) => {
   axios
-    .get(`/api/ingredients/${id}`, tokenConfig(getState))
+    .get(`/api/ingredients/${id}/`, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: GET_INGREDIENT,
@@ -45,6 +46,21 @@ export const createIngredient = (ingredient) => (dispatch, getState) => {
       });
     })
     .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const updateIngredient = (id, ingredient) => (dispatch, getState) => {
+  if (!id) message.error("ID was not supplied for ingredient update");
+  else
+    axios
+      .patch(`/api/ingredients/${id}/`, ingredient, tokenConfig(getState))
+      .then((res) => {
+        message.success("Ingredient updated");
+        dispatch({
+          type: UPDATE_INGREDIENT,
+          payload: res.data,
+        });
+      })
+      .catch((err) => returnError(err.response.data, err.response.status));
 };
 
 export const getIngredientCategories = () => (dispatch, getState) => {

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getIngredientCategories,
   createIngredient,
+  updateIngredient,
 } from "../../actions/ingredients";
 import { Form, Input, Button, Select } from "antd";
 
@@ -29,13 +30,10 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
   const onFinish = (values) => {
     // Strip tags of whitespace
     if (values.tags)
-      values.tags = values.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .join(",");
+      values.tags = values.tags.map((tag) => tag.trim()).join(",");
     // Update or create
     if (ingredient) {
-      // TODO dispatch(updateIngredient(id, values))
+      dispatch(updateIngredient(ingredient.id, values));
     } else dispatch(createIngredient(values));
   };
 
@@ -64,7 +62,7 @@ const IngredientForm = ({ ingredient } = { ingredient: null }) => {
       </Form.Item>
       <Form.Item {...formTailLayout}>
         <Button type="primary" htmlType="submit">
-          Create
+          {ingredient ? "Update" : "Create"}
         </Button>
       </Form.Item>
     </Form>

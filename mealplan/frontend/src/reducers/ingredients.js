@@ -2,6 +2,7 @@ import {
   GET_INGREDIENTS,
   GET_INGREDIENT,
   CREATE_INGREDIENT,
+  UPDATE_INGREDIENT,
   DELETE_INGREDIENT,
   GET_INGREDIENT_CATEGORIES,
 } from "../actions/types";
@@ -28,6 +29,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ingredients: [...state.ingredients, action.payload],
+      };
+    case UPDATE_INGREDIENT:
+      return {
+        ...state,
+        // TODO: find the updated ingredient and change in ingredients
+        ingredient: action.payload,
       };
     case GET_INGREDIENT_CATEGORIES:
       return {

@@ -41,9 +41,10 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    nutrition = NutritionSerializer(required=False)
+    nutrition = NutritionSerializer(required=False, allow_null=False)
     category = serializers.PrimaryKeyRelatedField(
-        queryset=IngredientCategory.objects.all(), required=False)
+        queryset=IngredientCategory.objects.all(),
+        required=False, allow_null=True)
     units = IngredientUnitSerializer(many=True, required=False)
     tags = TagField()
 
