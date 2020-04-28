@@ -7,6 +7,7 @@ import private_storage.urls
 
 api_urls = [
     path('', include('ingredients.urls')),
+    path('', include('recipes.urls')),
     path('', include('core.urls')),
 ]
 

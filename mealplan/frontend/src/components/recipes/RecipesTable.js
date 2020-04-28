@@ -2,6 +2,8 @@ import React from "react";
 import { Table, Tag, Rate } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { reverse } from "named-urls";
+import routes from "../routes";
 
 const RecipeTable = ({ recipes }) => {
   const columns = [
@@ -51,7 +53,7 @@ const RecipeTable = ({ recipes }) => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Link to={`/recipes/${record.id}/edit`}>
+        <Link to={reverse(routes.recipes.detail.edit, { id: record.id })}>
           <EditOutlined />
         </Link>
       ),

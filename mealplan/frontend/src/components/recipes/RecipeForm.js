@@ -45,7 +45,7 @@ const RecipeForm = ({ recipe }) => {
       </Form.Item>
       <Form.Item {...formTailLayout}>
         <Button type="primary" htmlType="submit">
-          {ingredient ? "Update" : "Create"}
+          {recipe ? "Update" : "Create"}
         </Button>
       </Form.Item>
     </Form>

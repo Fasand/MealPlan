@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Menu } from "antd";
+import routes from "../routes";
 
 const Header = (_) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -10,13 +11,16 @@ const Header = (_) => {
   const authMenu = (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="ingredients">
-        <Link to="/ingredients">Ingredients</Link>
+        <Link to={routes.ingredients.list}>Ingredients</Link>
+      </Menu.Item>
+      <Menu.Item key="recipes">
+        <Link to={routes.recipes.list}>Recipes</Link>
       </Menu.Item>
       <Menu.Item disabled>
         <strong>{user ? `Welcome ${user.username}` : ""}</strong>
       </Menu.Item>
       <Menu.Item key="logout">
-        <Link to="/logout">Logout</Link>
+        <Link to={routes.auth.logout}>Logout</Link>
       </Menu.Item>
     </Menu>
   );
@@ -24,10 +28,10 @@ const Header = (_) => {
   const guestMenu = (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="register">
-        <Link to="/register">Register</Link>
+        <Link to={routes.auth.register}>Register</Link>
       </Menu.Item>
       <Menu.Item key="login">
-        <Link to="/login">Login</Link>
+        <Link to={routes.auth.login}>Login</Link>
       </Menu.Item>
     </Menu>
   );

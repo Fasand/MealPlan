@@ -4,6 +4,7 @@ import { register } from "../../actions/auth";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, Form, Input, Button, Row, Col, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import routes from "../routes";
 
 const Register = (props) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -94,7 +95,8 @@ const Register = (props) => {
                 </Button>
               </Form.Item>
               <p>
-                Already have an account? <Link to="/login">Login</Link>
+                Already have an account?{" "}
+                <Link to={routes.auth.login}>Login</Link>
               </p>
             </Form>
           </Card>

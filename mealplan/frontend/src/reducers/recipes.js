@@ -34,11 +34,6 @@ export default function (state = initialState, action) {
         // TODO: find the updated recipe and change in recipes
         recipe: action.payload,
       };
-    case GET_RECIPE_CATEGORIES:
-      return {
-        ...state,
-        categories: action.payload,
-      };
     default:
       return state;
   }
