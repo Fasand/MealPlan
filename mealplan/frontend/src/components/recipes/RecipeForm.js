@@ -17,7 +17,7 @@ import {
   Rate,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { getIngredients } from "../../actions/ingredients";
+import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 
 // TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
 
@@ -25,10 +25,12 @@ const RecipeForm = ({ recipe }) => {
   const dispatch = useDispatch();
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
+  const units = useSelector((state) => state.ingredients.units);
 
   useEffect(() => {
     dispatch(getDurationTypes());
     dispatch(getIngredients());
+    dispatch(getIngredientUnits());
   }, []);
 
   const formLayout = {
@@ -113,13 +115,17 @@ const RecipeForm = ({ recipe }) => {
                               <Col span={8}>
                                 <Form.Item
                                   wrapperCol={{ span: 24 }}
-                                  key={[section.key, ingredient.key, "title"]}
+                                  key={[
+                                    section.key,
+                                    ingredient.key,
+                                    "ingredient",
+                                  ]}
                                   fieldKey={[
                                     section.fieldKey,
                                     ingredient.fieldKey,
-                                    "title",
+                                    "ingredient",
                                   ]}
-                                  name={[ingredient.name, "title"]}>
+                                  name={[ingredient.name, "ingredient"]}>
                                   <Select
                                     showSearch
                                     optionFilterProp="children">
@@ -174,7 +180,13 @@ const RecipeForm = ({ recipe }) => {
                                     "unit",
                                   ]}
                                   name={[ingredient.name, "unit"]}>
-                                  <Input placeholder="Unit" />
+                                  <Select optionFilterProp="children">
+                                    {units.map((unit) => (
+                                      <Select.Option key={unit.id}>
+                                        {unit.shorthand}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
                                 </Form.Item>
                               </Col>
                               <Col span={1}>

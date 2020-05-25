@@ -8,7 +8,7 @@ import {
   CREATE_INGREDIENT,
   UPDATE_INGREDIENT,
   DELETE_INGREDIENT,
-  SEARCH_INGREDIENTS,
+  GET_INGREDIENT_UNITS,
   GET_INGREDIENT_CATEGORIES,
 } from "./types";
 
@@ -64,12 +64,13 @@ export const updateIngredient = (id, ingredient) => (dispatch, getState) => {
       .catch((err) => returnError(err.response.data, err.response.status));
 };
 
-export const searchIngredients = () => (dispatch, getState) => {
+export const getIngredientUnits = () => (dispatch, getState) => {
+  // TODO: add units for specific ingredients
   axios
-    .get("/api/ingredients/", tokenConfig(getState))
+    .get("/api/ingredient-units/", tokenConfig(getState))
     .then((res) => {
       dispatch({
-        type: SEARCH_INGREDIENTS,
+        type: GET_INGREDIENT_UNITS,
         payload: res.data,
       });
     })
