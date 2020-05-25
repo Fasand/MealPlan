@@ -34,7 +34,7 @@ class Recipe(BaseModel):
                                      null=True, blank=True)
     notes = models.TextField(_('notes'), blank=True)
     # This ingredient will correspond to 100% in the recipe
-    # TODO: replace with the first available section ingredient on delete
+    # TODO: replace with a FloatField, scale to a number of grams because some recipes might scale to a section instead
     scaling_ingredient = models.OneToOneField(
         'recipes.SectionIngredient',
         on_delete=models.SET_NULL,

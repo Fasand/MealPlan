@@ -1,6 +1,10 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { createRecipe, updateRecipe } from "../../actions/recipes";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createRecipe,
+  updateRecipe,
+  getDurationTypes,
+} from "../../actions/recipes";
 import {
   Form,
   Input,
@@ -16,6 +20,11 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const RecipeForm = ({ recipe }) => {
   const dispatch = useDispatch();
+  const durationTypes = useSelector((state) => state.recipes.duration_types);
+
+  useEffect(() => {
+    dispatch(getDurationTypes());
+  }, []);
 
   const formLayout = {
     labelCol: { span: 8 },
@@ -256,7 +265,13 @@ const RecipeForm = ({ recipe }) => {
                                     "duration_type",
                                   ]}
                                   name={[direction.name, "duration_type"]}>
-                                  <Input placeholder="D Type" />
+                                  <Select>
+                                    {durationTypes.map((dType) => (
+                                      <Select.Option key={dType[0]}>
+                                        {dType[1]}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
                                 </Form.Item>
                               </Col>
                               <Col span={1}>

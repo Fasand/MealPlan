@@ -1,6 +1,7 @@
 import {
   GET_RECIPES,
   GET_RECIPE,
+  GET_DURATION_TYPES,
   CREATE_RECIPE,
   UPDATE_RECIPE,
   DELETE_RECIPE,
@@ -9,6 +10,7 @@ import {
 const initialState = {
   recipes: [],
   recipe: null,
+  duration_types: [],
 };
 
 export default function (state = initialState, action) {
@@ -22,6 +24,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         recipe: action.payload,
+      };
+    case GET_DURATION_TYPES:
+      return {
+        ...state,
+        duration_types: action.payload,
       };
     case CREATE_RECIPE:
       return {

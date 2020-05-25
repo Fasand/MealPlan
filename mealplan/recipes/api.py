@@ -1,6 +1,9 @@
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .serializers import (RecipeSerializer)
+from .constants import DURATION_TYPES
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -12,3 +15,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=False)
+    def duration_types(self, request):
+        return Response(DURATION_TYPES)

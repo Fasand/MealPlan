@@ -5,6 +5,7 @@ import { message } from "antd";
 import {
   GET_RECIPES,
   GET_RECIPE,
+  GET_DURATION_TYPES,
   CREATE_RECIPE,
   UPDATE_RECIPE,
   DELETE_RECIPE,
@@ -60,4 +61,16 @@ export const updateRecipe = (id, recipe) => (dispatch, getState) => {
         });
       })
       .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const getDurationTypes = () => (dispatch, getState) => {
+  axios
+    .get("/api/recipes/duration_types/", tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: GET_DURATION_TYPES,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
 };
