@@ -12,10 +12,11 @@ import {
   Select,
   Row,
   Col,
-  Space,
+  TimePicker,
   Checkbox,
   Rate,
 } from "antd";
+import moment from "moment";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 
@@ -27,6 +28,7 @@ const RecipeForm = ({ recipe }) => {
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
   const units = useSelector((state) => state.ingredients.units);
 
+  console.log(recipe);
   useEffect(() => {
     dispatch(getDurationTypes());
     dispatch(getIngredients());
@@ -56,9 +58,17 @@ const RecipeForm = ({ recipe }) => {
 
   // TODO: tags should be loaded from previously created ingredients
 
+  // Convert all present durations to moment()
   const initialValues = recipe
     ? {
         ...recipe,
+        sections: recipe.sections.map((section) => ({
+          ...section,
+          directions: section.directions.map((direction) => ({
+            ...direction,
+            duration: moment(direction.duration, "HH:mm:ss"),
+          })),
+        })),
       }
     : {};
 
@@ -273,7 +283,7 @@ const RecipeForm = ({ recipe }) => {
                                     "duration",
                                   ]}
                                   name={[direction.name, "duration"]}>
-                                  <Input placeholder="Duration" />
+                                  <TimePicker format={"HH:mm:ss"} />
                                 </Form.Item>
                               </Col>
                               <Col span={4}>

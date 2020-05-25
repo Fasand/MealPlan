@@ -18,7 +18,7 @@ const EditRecipe = (_) => {
   return (
     <Loading until={recipe}>
       <Row style={{ marginTop: "2rem" }}>
-        <Col span={16} offset={4}>
+        <Col span={24}>
           <Card>
             <RecipeForm {...{ recipe }} />
           </Card>
