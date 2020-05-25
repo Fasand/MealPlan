@@ -46,6 +46,7 @@ const RecipeForm = ({ recipe }) => {
 
   const onFinish = (values) => {
     console.log(values);
+    return;
 
     values = {
       ...values,
@@ -80,8 +81,15 @@ const RecipeForm = ({ recipe }) => {
         ...recipe,
         sections: recipe.sections.map((section) => ({
           ...section,
+          ingredients: section.ingredients.map((ingredient) => ({
+            ...ingredient,
+            // Convert so that it works as a correct key
+            ingredient: String(ingredient.ingredient),
+            unit: String(ingredient.unit),
+          })),
           directions: section.directions.map((direction) => ({
             ...direction,
+            // Convert so that it works as a correct moment() duration
             duration: direction.duration
               ? moment(direction.duration, DURATION_FORMAT)
               : direction.duration,
