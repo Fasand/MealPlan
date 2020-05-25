@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createRecipe,
@@ -17,13 +17,18 @@ import {
   Rate,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { getIngredients } from "../../actions/ingredients";
+
+// TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
 
 const RecipeForm = ({ recipe }) => {
   const dispatch = useDispatch();
   const durationTypes = useSelector((state) => state.recipes.duration_types);
+  const userIngredients = useSelector((state) => state.ingredients.ingredients);
 
   useEffect(() => {
     dispatch(getDurationTypes());
+    dispatch(getIngredients());
   }, []);
 
   const formLayout = {
@@ -115,10 +120,15 @@ const RecipeForm = ({ recipe }) => {
                                     "title",
                                   ]}
                                   name={[ingredient.name, "title"]}>
-                                  <Input
-                                    placeholder="Ingredient search"
-                                    style={{ width: "100%" }}
-                                  />
+                                  <Select
+                                    showSearch
+                                    optionFilterProp="children">
+                                    {userIngredients.map((i) => (
+                                      <Select.Option key={i.id}>
+                                        {i.title}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
                                 </Form.Item>
                               </Col>
                               <Col span={6}>

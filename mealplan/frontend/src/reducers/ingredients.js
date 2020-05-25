@@ -4,12 +4,14 @@ import {
   CREATE_INGREDIENT,
   UPDATE_INGREDIENT,
   DELETE_INGREDIENT,
+  SEARCH_INGREDIENTS,
   GET_INGREDIENT_CATEGORIES,
 } from "../actions/types";
 
 const initialState = {
   ingredients: [],
   ingredient: null,
+  ingredientSearch: [],
   categories: [],
 };
 
@@ -35,6 +37,11 @@ export default function (state = initialState, action) {
         ...state,
         // TODO: find the updated ingredient and change in ingredients
         ingredient: action.payload,
+      };
+    case SEARCH_INGREDIENTS:
+      return {
+        ...state,
+        ingredientSearch: action.payload,
       };
     case GET_INGREDIENT_CATEGORIES:
       return {

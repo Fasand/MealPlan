@@ -8,6 +8,7 @@ import {
   CREATE_INGREDIENT,
   UPDATE_INGREDIENT,
   DELETE_INGREDIENT,
+  SEARCH_INGREDIENTS,
   GET_INGREDIENT_CATEGORIES,
 } from "./types";
 
@@ -61,6 +62,18 @@ export const updateIngredient = (id, ingredient) => (dispatch, getState) => {
         });
       })
       .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const searchIngredients = () => (dispatch, getState) => {
+  axios
+    .get("/api/ingredients/", tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: SEARCH_INGREDIENTS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
 };
 
 export const getIngredientCategories = () => (dispatch, getState) => {
