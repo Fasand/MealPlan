@@ -1,7 +1,17 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { createRecipe, updateRecipe } from "../../actions/recipes";
-import { Form, Input, Button, Select, Row, Col, Space, Checkbox } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Row,
+  Col,
+  Space,
+  Checkbox,
+  Rate,
+} from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const RecipeForm = ({ recipe }) => {
@@ -46,6 +56,18 @@ const RecipeForm = ({ recipe }) => {
       </Form.Item>
       <Form.Item label="Tags" name="tags">
         <Select mode="tags" tokenSeparators={[","]}></Select>
+      </Form.Item>
+      <Form.Item label="Sources" name="sources">
+        <Input.TextArea />
+      </Form.Item>
+      <Form.Item label="Servings" name="servings">
+        <Input type="number" />
+      </Form.Item>
+      <Form.Item label="Notes" name="notes">
+        <Input.TextArea />
+      </Form.Item>
+      <Form.Item label="Difficulty" name="difficulty">
+        <Rate />
       </Form.Item>
       <h3>Sections</h3>
       <Form.List name="sections" wrapperCol={{ span: 24 }}>
