@@ -43,7 +43,7 @@ const RecipeForm = ({ recipe }) => {
 
   const onFinish = (values) => {
     console.log(values);
-    return;
+    // return;
 
     // Strip tags of whitespace
     if (values.tags)
@@ -84,6 +84,9 @@ const RecipeForm = ({ recipe }) => {
       </Form.Item>
       <Form.Item label="Difficulty" name="difficulty">
         <Rate />
+      </Form.Item>
+      <Form.Item label="Scaled to (100%)" name="scaled_to">
+        <Input type="number" />
       </Form.Item>
       <h3>Sections</h3>
       <Form.List name="sections" wrapperCol={{ span: 24 }}>

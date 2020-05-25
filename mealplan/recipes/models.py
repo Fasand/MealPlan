@@ -33,13 +33,8 @@ class Recipe(BaseModel):
                                      choices=constants.DIFFICULTIES,
                                      null=True, blank=True)
     notes = models.TextField(_('notes'), blank=True)
-    # This ingredient will correspond to 100% in the recipe
-    # TODO: replace with a FloatField, scale to a number of grams because some recipes might scale to a section instead
-    scaling_ingredient = models.OneToOneField(
-        'recipes.SectionIngredient',
-        on_delete=models.SET_NULL,
-        related_name='scaled_recipe',
-        null=True, blank=True)
+    # In grams what corresponds to 100%
+    scaled_to = models.FloatField(_('scaled to'), null=True, blank=True)
 
     def __str__(self):
         return self.title
