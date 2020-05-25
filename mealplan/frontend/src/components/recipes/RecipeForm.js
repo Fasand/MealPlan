@@ -96,7 +96,7 @@ const RecipeForm = ({ recipe }) => {
                         <div>
                           {ingredients.map((ingredient) => (
                             <Row key={[section.key, ingredient.key]}>
-                              <Col span={12}>
+                              <Col span={8}>
                                 <Form.Item
                                   wrapperCol={{ span: 24 }}
                                   key={[section.key, ingredient.key, "title"]}
@@ -132,45 +132,59 @@ const RecipeForm = ({ recipe }) => {
                                   <Input placeholder="Preparation method" />
                                 </Form.Item>
                               </Col>
-                              <Form.Item
-                                key={[section.key, ingredient.key, "amount"]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  ingredient.fieldKey,
-                                  "amount",
-                                ]}
-                                name={[ingredient.name, "amount"]}>
-                                <Input placeholder="Amount" />
-                              </Form.Item>
-                              <Form.Item
-                                key={[section.key, ingredient.key, "unit"]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  ingredient.fieldKey,
-                                  "unit",
-                                ]}
-                                name={[ingredient.name, "unit"]}>
-                                <Input placeholder="Unit" />
-                              </Form.Item>
-                              <Form.Item
-                                valuePropName="checked"
-                                key={[section.key, ingredient.key, "optional"]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  ingredient.fieldKey,
-                                  "optional",
-                                ]}
-                                name={[ingredient.name, "optional"]}>
-                                <Checkbox />
-                              </Form.Item>
-                              {ingredients.length > 1 && (
-                                <MinusCircleOutlined
-                                  style={{ margin: "0 8px" }}
-                                  onClick={() =>
-                                    removeIngredient(ingredient.name)
-                                  }
-                                />
-                              )}
+                              <Col span={4}>
+                                <Form.Item
+                                  wrapperCol={{ span: 24 }}
+                                  key={[section.key, ingredient.key, "amount"]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    ingredient.fieldKey,
+                                    "amount",
+                                  ]}
+                                  name={[ingredient.name, "amount"]}>
+                                  <Input placeholder="Amount" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={4}>
+                                <Form.Item
+                                  wrapperCol={{ span: 24 }}
+                                  key={[section.key, ingredient.key, "unit"]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    ingredient.fieldKey,
+                                    "unit",
+                                  ]}
+                                  name={[ingredient.name, "unit"]}>
+                                  <Input placeholder="Unit" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={1}>
+                                <Form.Item
+                                  valuePropName="checked"
+                                  key={[
+                                    section.key,
+                                    ingredient.key,
+                                    "optional",
+                                  ]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    ingredient.fieldKey,
+                                    "optional",
+                                  ]}
+                                  name={[ingredient.name, "optional"]}>
+                                  <Checkbox />
+                                </Form.Item>
+                              </Col>
+                              <Col span={1}>
+                                {ingredients.length > 1 && (
+                                  <MinusCircleOutlined
+                                    style={{ margin: "0 8px" }}
+                                    onClick={() =>
+                                      removeIngredient(ingredient.name)
+                                    }
+                                  />
+                                )}
+                              </Col>
                             </Row>
                           ))}
                           <Form.Item wrapperCol={{ span: 24 }}>
@@ -198,63 +212,76 @@ const RecipeForm = ({ recipe }) => {
                         <div>
                           {directions.map((direction) => (
                             <Row key={[section.key, direction.key]}>
-                              <Form.Item
-                                key={[
-                                  section.key,
-                                  direction.key,
-                                  "description",
-                                ]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  direction.fieldKey,
-                                  "description",
-                                ]}
-                                name={[direction.name, "description"]}>
-                                <Input placeholder="Description" />
-                              </Form.Item>
-                              <Form.Item
-                                key={[section.key, direction.key, "duration"]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  direction.fieldKey,
-                                  "duration",
-                                ]}
-                                name={[direction.name, "duration"]}>
-                                <Input placeholder="Duration" />
-                              </Form.Item>
-                              <Form.Item
-                                key={[
-                                  section.key,
-                                  direction.key,
-                                  "duration_type",
-                                ]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  direction.fieldKey,
-                                  "duration_type",
-                                ]}
-                                name={[direction.name, "duration_type"]}>
-                                <Input placeholder="D Type" />
-                              </Form.Item>
-                              <Form.Item
-                                valuePropName="checked"
-                                key={[section.key, direction.key, "optional"]}
-                                fieldKey={[
-                                  section.fieldKey,
-                                  direction.fieldKey,
-                                  "optional",
-                                ]}
-                                name={[direction.name, "optional"]}>
-                                <Checkbox />
-                              </Form.Item>
-                              {directions.length > 1 && (
-                                <MinusCircleOutlined
-                                  style={{ margin: "0 8px" }}
-                                  onClick={() =>
-                                    removeDirection(direction.name)
-                                  }
-                                />
-                              )}
+                              <Col span={13}>
+                                <Form.Item
+                                  wrapperCol={{ span: 24 }}
+                                  key={[
+                                    section.key,
+                                    direction.key,
+                                    "description",
+                                  ]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    direction.fieldKey,
+                                    "description",
+                                  ]}
+                                  name={[direction.name, "description"]}>
+                                  <Input placeholder="Description" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={5}>
+                                <Form.Item
+                                  wrapperCol={{ span: 24 }}
+                                  key={[section.key, direction.key, "duration"]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    direction.fieldKey,
+                                    "duration",
+                                  ]}
+                                  name={[direction.name, "duration"]}>
+                                  <Input placeholder="Duration" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={4}>
+                                <Form.Item
+                                  wrapperCol={{ span: 24 }}
+                                  key={[
+                                    section.key,
+                                    direction.key,
+                                    "duration_type",
+                                  ]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    direction.fieldKey,
+                                    "duration_type",
+                                  ]}
+                                  name={[direction.name, "duration_type"]}>
+                                  <Input placeholder="D Type" />
+                                </Form.Item>
+                              </Col>
+                              <Col span={1}>
+                                <Form.Item
+                                  valuePropName="checked"
+                                  key={[section.key, direction.key, "optional"]}
+                                  fieldKey={[
+                                    section.fieldKey,
+                                    direction.fieldKey,
+                                    "optional",
+                                  ]}
+                                  name={[direction.name, "optional"]}>
+                                  <Checkbox />
+                                </Form.Item>
+                              </Col>
+                              <Col span={1}>
+                                {directions.length > 1 && (
+                                  <MinusCircleOutlined
+                                    style={{ margin: "0 8px" }}
+                                    onClick={() =>
+                                      removeDirection(direction.name)
+                                    }
+                                  />
+                                )}
+                              </Col>
                             </Row>
                           ))}
                           <Form.Item wrapperCol={{ span: 24 }}>
