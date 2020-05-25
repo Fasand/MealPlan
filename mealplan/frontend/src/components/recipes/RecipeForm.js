@@ -122,10 +122,25 @@ const RecipeForm = ({ recipe }) => {
       </Form.Item>
       <h3>Sections</h3>
       <Form.List name="sections" wrapperCol={{ span: 24 }}>
-        {(sections, { add: addSection, remove: removeSection }) => (
+        {(
+          sections,
+          { add: addSection, remove: removeSection, move: moveSection }
+        ) => (
           <div>
             {sections.map((section) => (
               <div key={section.key}>
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => moveSection(section.name, section.name + 1)}>
+                    Down
+                  </Button>
+                  <Button
+                    type="dashed"
+                    onClick={() => moveSection(section.name, section.name - 1)}>
+                    Up
+                  </Button>
+                </Form.Item>
                 <Form.Item
                   label="Title"
                   name={[section.name, "title"]}
