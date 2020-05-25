@@ -45,7 +45,7 @@ class RecipeSection(BaseModel):
                                on_delete=models.CASCADE,
                                related_name='sections',
                                related_query_name='section')
-    title = models.CharField(_('title'), max_length=128)
+    title = models.CharField(_('title'), max_length=128, blank=True)
 
     def __str__(self):
         return f"{self.recipe} | {self.title}"
@@ -62,7 +62,8 @@ class SectionIngredient(BaseModel):
                                    related_query_name='in_recipe')
     # Suggestions given from PreparationMethod
     preparation_method = models.CharField(_('preparation method'),
-                                          max_length=64)
+                                          max_length=64,
+                                          blank=True)
     amount = models.FloatField(_('amount'))
     # TODO: Should be recalculated to a different unit on delete (signal)
     # https://stackoverflow.com/questions/36571834/django-pass-self-to-models-set-on-delete
