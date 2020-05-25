@@ -45,9 +45,6 @@ const RecipeForm = ({ recipe }) => {
   };
 
   const onFinish = (values) => {
-    console.log(values);
-    return;
-
     values = {
       ...values,
       sections: values.sections.map((section) => ({
@@ -62,7 +59,6 @@ const RecipeForm = ({ recipe }) => {
           : section.directions,
       })),
     };
-    // return;
 
     // Strip tags of whitespace
     if (values.tags)
