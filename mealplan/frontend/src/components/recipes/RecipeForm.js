@@ -82,7 +82,9 @@ const RecipeForm = ({ recipe }) => {
           ...section,
           directions: section.directions.map((direction) => ({
             ...direction,
-            duration: moment(direction.duration, DURATION_FORMAT),
+            duration: direction.duration
+              ? moment(direction.duration, DURATION_FORMAT)
+              : direction.duration,
           })),
         })),
       }
