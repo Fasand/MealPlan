@@ -22,13 +22,14 @@ import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 
 // TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
 
+const DURATION_FORMAT = "HH:mm:ss";
+
 const RecipeForm = ({ recipe }) => {
   const dispatch = useDispatch();
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
   const units = useSelector((state) => state.ingredients.units);
 
-  console.log(recipe);
   useEffect(() => {
     dispatch(getDurationTypes());
     dispatch(getIngredients());
@@ -45,6 +46,21 @@ const RecipeForm = ({ recipe }) => {
 
   const onFinish = (values) => {
     console.log(values);
+
+    values = {
+      ...values,
+      sections: values.sections.map((section) => ({
+        ...section,
+        directions: section.directions
+          ? section.directions.map((direction) => ({
+              ...direction,
+              duration: direction.duration
+                ? direction.duration.format(DURATION_FORMAT)
+                : direction.duration,
+            }))
+          : section.directions,
+      })),
+    };
     // return;
 
     // Strip tags of whitespace
@@ -66,7 +82,7 @@ const RecipeForm = ({ recipe }) => {
           ...section,
           directions: section.directions.map((direction) => ({
             ...direction,
-            duration: moment(direction.duration, "HH:mm:ss"),
+            duration: moment(direction.duration, DURATION_FORMAT),
           })),
         })),
       }
