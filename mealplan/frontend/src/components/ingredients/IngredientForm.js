@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { createIngredient, updateIngredient } from "../../actions/ingredients";
 import { Row, Col, Form, Input, Button, Select } from "antd";
+import USDAModal from "./USDAModal";
 
 const IngredientForm = ({ ingredient, categories }) => {
   const dispatch = useDispatch();
@@ -102,7 +103,11 @@ const IngredientForm = ({ ingredient, categories }) => {
             <Input type="number" />
           </Form.Item>
           <Form.Item wrapperCol={{ span: 24 }} style={{ textAlign: "right" }}>
-            <Button type="ghost" onClick={() => form.resetFields()}>
+            {ingredient && <USDAModal ingredient={ingredient} />}
+            <Button
+              type="ghost"
+              onClick={() => form.resetFields()}
+              style={{ marginLeft: "1rem" }}>
               Clear
             </Button>
             <Button

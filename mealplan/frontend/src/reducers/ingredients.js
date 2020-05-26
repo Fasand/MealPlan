@@ -6,6 +6,7 @@ import {
   DELETE_INGREDIENT,
   GET_INGREDIENT_UNITS,
   GET_INGREDIENT_CATEGORIES,
+  SEARCH_USDA,
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   ingredientSearch: [],
   categories: [],
   units: [],
+  searchUsda: [],
 };
 
 export default function (state = initialState, action) {
@@ -48,6 +50,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         categories: action.payload,
+      };
+    case SEARCH_USDA:
+      return {
+        ...state,
+        searchUsda: action.payload,
       };
     default:
       return state;

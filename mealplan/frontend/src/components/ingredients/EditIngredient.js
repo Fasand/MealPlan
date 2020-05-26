@@ -16,9 +16,11 @@ const EditIngredient = (_) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getIngredient(id));
     dispatch(getIngredientCategories());
   }, []);
+  useEffect(() => {
+    dispatch(getIngredient(id));
+  }, [id]);
 
   return (
     <Loading until={ingredient}>

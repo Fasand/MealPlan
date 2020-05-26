@@ -10,6 +10,7 @@ import {
   DELETE_INGREDIENT,
   GET_INGREDIENT_UNITS,
   GET_INGREDIENT_CATEGORIES,
+  SEARCH_USDA,
 } from "./types";
 
 export const getIngredients = () => (dispatch, getState) => {
@@ -25,6 +26,11 @@ export const getIngredients = () => (dispatch, getState) => {
 };
 
 export const getIngredient = (id) => (dispatch, getState) => {
+  // Reset before loading
+  dispatch({
+    type: GET_INGREDIENT,
+    payload: null,
+  });
   axios
     .get(`/api/ingredients/${id}/`, tokenConfig(getState))
     .then((res) => {
@@ -83,6 +89,40 @@ export const getIngredientCategories = () => (dispatch, getState) => {
     .then((res) => {
       dispatch({
         type: GET_INGREDIENT_CATEGORIES,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const searchUsda = (query) => (dispatch, getState) => {
+  axios
+    .get(`/api/ingredients/usda/?q=${query}`, tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: SEARCH_USDA,
+        payload: res.data,
+      });
+    })
+    .catch((err) => returnError(err.response.data, err.response.status));
+};
+
+export const loadFromUsda = (ingredient, usdaIngredient) => (
+  dispatch,
+  getState
+) => {
+  const data = { ingredient, usdaIngredient };
+  // Reset before loading
+  dispatch({
+    type: GET_INGREDIENT,
+    payload: null,
+  });
+  axios
+    .post(`/api/ingredients/usda/`, data, tokenConfig(getState))
+    .then((res) => {
+      message.success("Ingredient loaded from USDA");
+      dispatch({
+        type: GET_INGREDIENT,
         payload: res.data,
       });
     })

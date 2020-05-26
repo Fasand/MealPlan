@@ -57,3 +57,8 @@ class IngredientSerializer(serializers.ModelSerializer):
             'id', 'user', 'title', 'description', 'category', 'tags', 'image',
             'usda_fdc_id', 'density', 'nutrition', 'units',
         )
+
+
+class IngredientSearchSerializer(IngredientSerializer):
+    class Meta(IngredientSerializer.Meta):
+        fields = ('id', 'title')

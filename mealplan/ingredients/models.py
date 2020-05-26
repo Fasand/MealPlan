@@ -42,6 +42,26 @@ class Ingredient(BaseModel):
 
     # nutrition is added through a OneToOne relationship from Nutrition
 
+    def load_from_usda(self, usda):
+        if usda.usda_fdc_id == None:
+            raise Exception("Not a USDA ingredient")
+        # Replace most fields with those in USDA
+        self.category = usda.category
+        self.density = usda.density
+        self.usda_fdc_id = usda.usda_fdc_id
+        # Replace nutrition completely by cloning target nutrition
+        if hasattr(self, "nutrition"):
+            self.nutrition.delete()
+        nutrition = usda.nutrition
+        nutrition.pk = None
+        nutrition.id = None
+        nutrition.ingredient = self
+        nutrition.save()
+        # Copy custom units
+        self.units.set(usda.units.all())
+        # Save instance
+        self.save()
+
     def __str__(self):
         return f"{self.title}"
 
