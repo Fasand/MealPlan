@@ -44,6 +44,12 @@ const RecipeForm = ({ recipe }) => {
     wrapperCol: { offset: 8, span: 16 },
   };
 
+  const STYLE_SECTION = {
+    borderBottom: "1px solid #CCC",
+    marginBottom: "1rem",
+    paddingBottom: "1rem",
+  };
+
   const onFinish = (values) => {
     values = {
       ...values,
@@ -128,26 +134,45 @@ const RecipeForm = ({ recipe }) => {
         ) => (
           <div>
             {sections.map((section) => (
-              <div key={section.key}>
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => moveSection(section.name, section.name + 1)}>
-                    Down
-                  </Button>
-                  <Button
-                    type="dashed"
-                    onClick={() => moveSection(section.name, section.name - 1)}>
-                    Up
-                  </Button>
-                </Form.Item>
-                <Form.Item
-                  label="Title"
-                  name={[section.name, "title"]}
-                  key={[section.key, "title"]}
-                  fieldKey={[section.fieldKey, "title"]}>
-                  <Input />
-                </Form.Item>
+              <div key={section.key} style={STYLE_SECTION}>
+                <Row>
+                  <Col span={4}>
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        onClick={() =>
+                          moveSection(section.name, section.name + 1)
+                        }>
+                        Down
+                      </Button>
+                      <Button
+                        type="dashed"
+                        onClick={() =>
+                          moveSection(section.name, section.name - 1)
+                        }>
+                        Up
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                  <Col span={17}>
+                    <Form.Item
+                      labelCol={{ span: 2 }}
+                      wrapperCol={{ span: 21 }}
+                      label="Title"
+                      name={[section.name, "title"]}
+                      key={[section.key, "title"]}
+                      fieldKey={[section.fieldKey, "title"]}>
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={3}>
+                    <Button
+                      type="danger"
+                      onClick={() => removeSection(section.name)}>
+                      Delete section
+                    </Button>
+                  </Col>
+                </Row>
                 <Row>
                   <Col span={12}>
                     <Form.List
@@ -257,14 +282,12 @@ const RecipeForm = ({ recipe }) => {
                                 </Form.Item>
                               </Col>
                               <Col span={1}>
-                                {ingredients.length > 1 && (
-                                  <MinusCircleOutlined
-                                    style={{ margin: "0 8px" }}
-                                    onClick={() =>
-                                      removeIngredient(ingredient.name)
-                                    }
-                                  />
-                                )}
+                                <MinusCircleOutlined
+                                  style={{ margin: "0 8px" }}
+                                  onClick={() =>
+                                    removeIngredient(ingredient.name)
+                                  }
+                                />
                               </Col>
                             </Row>
                           ))}
@@ -360,14 +383,12 @@ const RecipeForm = ({ recipe }) => {
                                 </Form.Item>
                               </Col>
                               <Col span={1}>
-                                {directions.length > 1 && (
-                                  <MinusCircleOutlined
-                                    style={{ margin: "0 8px" }}
-                                    onClick={() =>
-                                      removeDirection(direction.name)
-                                    }
-                                  />
-                                )}
+                                <MinusCircleOutlined
+                                  style={{ margin: "0 8px" }}
+                                  onClick={() =>
+                                    removeDirection(direction.name)
+                                  }
+                                />
                               </Col>
                             </Row>
                           ))}
@@ -384,12 +405,6 @@ const RecipeForm = ({ recipe }) => {
                     </Form.List>
                   </Col>
                 </Row>
-                {sections.length > 1 && (
-                  <MinusCircleOutlined
-                    style={{ margin: "0 8px" }}
-                    onClick={() => removeSection(section.name)}
-                  />
-                )}
               </div>
             ))}
             <Form.Item wrapperCol={{ span: 24 }}>
