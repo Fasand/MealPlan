@@ -3,8 +3,9 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from ordered_model.models import OrderedModel
 
-from .managers import BaseManager
+from .managers import (BaseManager, OrderedBaseManager)
 
 
 class BaseModel(models.Model):
@@ -46,6 +47,13 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
         ordering = ('-active', '-modified')
+
+
+class OrderedBaseModel(BaseModel, OrderedModel):
+    objects = OrderedBaseManager()
+
+    class Meta(OrderedModel.Meta):
+        abstract = True
 
 
 class User(AbstractUser):

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from private_storage.fields import PrivateFileField
 
-from core.models import BaseModel
+from core.models import BaseModel, OrderedBaseModel
 from core.fields import PrivateImageField
 from core.constants import (ALLOWED_IMAGE_MIME_TYPES, MAX_IMAGE_FILE_SIZE)
 from . import constants
@@ -40,7 +40,7 @@ class Recipe(BaseModel):
         return self.title
 
 
-class RecipeSection(BaseModel):
+class RecipeSection(OrderedBaseModel):
     recipe = models.ForeignKey('recipes.Recipe',
                                on_delete=models.CASCADE,
                                related_name='sections',
@@ -51,7 +51,7 @@ class RecipeSection(BaseModel):
         return f"{self.recipe} | {self.title}"
 
 
-class SectionIngredient(BaseModel):
+class SectionIngredient(OrderedBaseModel):
     section = models.ForeignKey('recipes.RecipeSection',
                                 on_delete=models.CASCADE,
                                 related_name='ingredients',
@@ -85,7 +85,7 @@ def section_direction_image_path(instance, filename):
             f"directions/{instance.pk}/{filename}")
 
 
-class SectionDirection(BaseModel):
+class SectionDirection(OrderedBaseModel):
     section = models.ForeignKey('recipes.RecipeSection',
                                 on_delete=models.CASCADE,
                                 related_name='directions',

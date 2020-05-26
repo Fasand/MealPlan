@@ -14,6 +14,7 @@ django-private-storage = "*"
 psycopg2-binary = "*"
 django-rest-knox = "*"
 djangorestframework = "*"
+django-ordered-model = "*"
 
 [requires]
 python_version = "3.7"

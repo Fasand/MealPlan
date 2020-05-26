@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 3rd-party
+    'ordered_model',
     'modeltranslation',
     'private_storage',
     'rest_framework',
