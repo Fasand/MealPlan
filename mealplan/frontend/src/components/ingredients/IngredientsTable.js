@@ -23,7 +23,7 @@ const IngredientsTable = ({ ingredients, categories }) => {
       key: "category",
       render: (category) => (
         <p>
-          {category
+          {category && categories.find((c) => c.id == category)
             ? categories.find((c) => c.id == category).title
             : "Uncategorized"}
         </p>

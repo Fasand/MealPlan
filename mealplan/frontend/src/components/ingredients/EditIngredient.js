@@ -23,7 +23,7 @@ const EditIngredient = (_) => {
   return (
     <Loading until={ingredient}>
       <Row style={{ marginTop: "2rem" }}>
-        <Col span={16} offset={4}>
+        <Col span={22} offset={1}>
           <Card>
             <IngredientForm {...{ ingredient, categories }} />
           </Card>

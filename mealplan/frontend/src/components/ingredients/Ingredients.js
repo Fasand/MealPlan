@@ -23,7 +23,7 @@ const Ingredients = (_) => {
     <div>
       <h1>Ingredients</h1>
       <Row justify="center">
-        <Col span={12}>
+        <Col span={22}>
           <Collapse defaultActiveKey={1}>
             <Collapse.Panel header="Create ingredient" key="1">
               <IngredientForm categories={categories} />

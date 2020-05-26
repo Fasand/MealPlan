@@ -59,8 +59,8 @@ class Nutrition(BaseModel):
         _('Caffeine'), null=True, blank=True)
     theobromine = models.FloatField(                               # 1058 MG
         _('Theobromine'), null=True, blank=True)
-    energy = models.FloatField(                                    # 1062 kJ
-        _('Energy'), null=True, blank=True)
+    energy_kj = models.FloatField(                                 # 1062 kJ
+        _('Energy (kJ)'), null=True, blank=True)
     sugars_total_nlea = models.FloatField(                         # 1063 G
         _('Sugars, Total NLEA'), null=True, blank=True)
     carbohydrate_other = models.FloatField(                        # 1072 G

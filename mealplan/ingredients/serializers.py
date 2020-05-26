@@ -24,13 +24,31 @@ class IngredientSerializer(serializers.ModelSerializer):
         queryset=IngredientCategory.objects.all(),
         required=False, allow_null=True)
     units = IngredientUnitSerializer(many=True, required=False)
-    tags = TagField()
+    tags = TagField(required=False)
 
     def create(self, validated_data):
+        nutrition_data = validated_data.pop('nutrition', {})
+        # Create ingredient from data
         ingredient = Ingredient.objects.create(**validated_data)
-        # Create an empty nutrition if none supplied
-        if validated_data.get('nutrition') is None:
-            Nutrition.objects.create(ingredient=ingredient)
+        # Create nutrition from data
+        Nutrition.objects.create(ingredient=ingredient, **nutrition_data)
+        return ingredient
+
+    def update(self, ingredient, validated_data):
+        nutrition_data = validated_data.pop('nutrition', {})
+        # Create an empty nutrition if none exists
+        if hasattr(ingredient, 'nutrition'):
+            nutrition = ingredient.nutrition
+        else:
+            nutrition = Nutrition.objects.create(ingredient=ingredient)
+        # Update ingredient
+        for attr, val in validated_data.items():
+            setattr(ingredient, attr, val)
+        ingredient.save()
+        # Update nutrition
+        for attr, val in nutrition_data.items():
+            setattr(nutrition, attr, val)
+        nutrition.save()
         return ingredient
 
     class Meta:
