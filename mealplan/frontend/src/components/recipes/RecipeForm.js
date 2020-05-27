@@ -313,7 +313,7 @@ const RecipeForm = ({ recipe }) => {
                                     "amount",
                                   ]}
                                   name={[ingredient.name, "amount"]}>
-                                  <Input placeholder="Amount" />
+                                  <Input placeholder="Amount" type="number" />
                                 </Form.Item>
                               </Col>
                               <Col span={4}>
@@ -326,7 +326,9 @@ const RecipeForm = ({ recipe }) => {
                                     "unit",
                                   ]}
                                   name={[ingredient.name, "unit"]}>
-                                  <Select optionFilterProp="children">
+                                  <Select
+                                    showSearch
+                                    optionFilterProp="children">
                                     {units.map((unit) => (
                                       <Select.Option key={unit.id}>
                                         {unit.shorthand || unit.title}
