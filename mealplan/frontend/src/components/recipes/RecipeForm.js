@@ -25,6 +25,7 @@ import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 const DURATION_FORMAT = "HH:mm:ss";
 
 const RecipeForm = ({ recipe }) => {
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
@@ -75,6 +76,58 @@ const RecipeForm = ({ recipe }) => {
     } else dispatch(createRecipe(values));
   };
 
+  const onValuesChange = (changed) => {
+    const values = form.getFieldsValue();
+    console.log(values);
+    // TODO: move to a separate nutrition lib
+
+    const nutritions = values.sections
+      .map((section) =>
+        section
+          ? section.ingredients.map((i) => {
+              // Only compute anything if data is present
+              if (!(i && i.ingredient && i.unit && i.amount)) return {};
+              // Find the necessary data in state
+              const ingredient = userIngredients.find(
+                (x) => x.id == i.ingredient
+              );
+              const unit = units.find((u) => u.id == i.unit);
+              // TODO: will need to convert to weight units for this
+              const inGrams = unit.amount_in_base * i.amount;
+              const multiplier = inGrams / 100.0;
+              // Compute scaled nutrition
+              return Object.fromEntries(
+                Object.entries(ingredient.nutrition).map(([key, val]) =>
+                  typeof val == "number" ? [key, val * multiplier] : [key, val]
+                )
+              );
+            })
+          : []
+      )
+      // Flatten and remove empty dictionaries
+      .flat()
+      .filter((i) => Object.keys(i).length != 0);
+
+    const totalNutrition = nutritions.reduce((acc, cur) => {
+      return Object.fromEntries(
+        Object.entries(acc).map(([key, val]) => {
+          // Both numbers, return sum
+          if (typeof val == "number" && typeof cur[key] == "number")
+            return [key, val + cur[key]];
+          // Accumulater has a value already (number or other), leave it
+          else if (val) return [key, val];
+          // Otherwise return whatever is in the current one
+          else return [key, cur[key]];
+        })
+      );
+    });
+
+    window.nutritions = nutritions;
+    window.totalNutrition = totalNutrition;
+    console.log(nutritions);
+    console.log(totalNutrition);
+  };
+
   // TODO: tags should be loaded from previously created ingredients
 
   // Convert all present durations to moment()
@@ -101,31 +154,43 @@ const RecipeForm = ({ recipe }) => {
     : {};
 
   return (
-    <Form onFinish={onFinish} {...formLayout} initialValues={initialValues}>
-      <Form.Item label="Title" name="title">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Description" name="description">
-        <Input.TextArea />
-      </Form.Item>
-      <Form.Item label="Tags" name="tags">
-        <Select mode="tags" tokenSeparators={[","]}></Select>
-      </Form.Item>
-      <Form.Item label="Sources" name="sources">
-        <Input.TextArea />
-      </Form.Item>
-      <Form.Item label="Servings" name="servings">
-        <Input type="number" />
-      </Form.Item>
-      <Form.Item label="Notes" name="notes">
-        <Input.TextArea />
-      </Form.Item>
-      <Form.Item label="Difficulty" name="difficulty">
-        <Rate />
-      </Form.Item>
-      <Form.Item label="Scaled to (100%)" name="scaled_to">
-        <Input type="number" />
-      </Form.Item>
+    <Form
+      form={form}
+      onFinish={onFinish}
+      {...formLayout}
+      onValuesChange={onValuesChange}
+      initialValues={initialValues}>
+      <Row>
+        <Col span={12}>
+          <Form.Item label="Title" name="title">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item label="Tags" name="tags">
+            <Select mode="tags" tokenSeparators={[","]}></Select>
+          </Form.Item>
+          <Form.Item label="Sources" name="sources">
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item label="Servings" name="servings">
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item label="Notes" name="notes">
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item label="Difficulty" name="difficulty">
+            <Rate />
+          </Form.Item>
+          <Form.Item label="Scaled to (100%)" name="scaled_to">
+            <Input type="number" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <h3>Nutrition</h3>
+        </Col>
+      </Row>
       <h3>Sections</h3>
       <Form.List name="sections" wrapperCol={{ span: 24 }}>
         {(
@@ -258,7 +323,7 @@ const RecipeForm = ({ recipe }) => {
                                   <Select optionFilterProp="children">
                                     {units.map((unit) => (
                                       <Select.Option key={unit.id}>
-                                        {unit.shorthand}
+                                        {unit.shorthand || unit.title}
                                       </Select.Option>
                                     ))}
                                   </Select>
