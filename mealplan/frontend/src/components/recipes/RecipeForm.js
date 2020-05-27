@@ -28,7 +28,7 @@ const DURATION_FORMAT = "HH:mm:ss";
 const RecipeForm = ({ recipe }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const [totalNutrition, setTotalNutrition] = useState();
+  const [totalNutrition, setTotalNutrition] = useState(null);
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
   const units = useSelector((state) => state.ingredients.units);
@@ -84,11 +84,11 @@ const RecipeForm = ({ recipe }) => {
     } else dispatch(createRecipe(values));
   };
 
-  const computeTotalNutrition = (recipe) =>
+  const computeTotalNutrition = (recipe) => {
     // TODO: move to a separate nutrition lib
-    recipe.sections
+    const nutritions = recipe.sections
       .map((section) =>
-        section
+        section && section.ingredients
           ? section.ingredients.map((i) => {
               // Only compute anything if data is present
               if (!(i && i.ingredient && i.unit && i.amount)) return {};
@@ -111,9 +111,10 @@ const RecipeForm = ({ recipe }) => {
       )
       // Flatten and remove empty dictionaries
       .flat()
-      .filter((i) => Object.keys(i).length != 0)
-      // Sum all nutritions
-      .reduce((acc, cur) =>
+      .filter((i) => Object.keys(i).length != 0);
+    // Sum all nutritions or return null
+    if (nutritions.length > 0)
+      return nutritions.reduce((acc, cur) =>
         Object.fromEntries(
           Object.entries(acc).map(([key, val]) => {
             // Both numbers, return sum
@@ -126,6 +127,8 @@ const RecipeForm = ({ recipe }) => {
           })
         )
       );
+    else return null;
+  };
 
   const onValuesChange = (changed) => {
     setTotalNutrition(computeTotalNutrition(form.getFieldsValue()));

@@ -12,7 +12,7 @@ const NutritionTable = ({ nutrition, toFixed = 1, ...props }) => {
 
   const dataSource = nutrition
     ? fields.map(([label, field, unit]) => ({
-        value: nutrition[field].toFixed(toFixed),
+        value: nutrition[field] ? nutrition[field].toFixed(toFixed) : null,
         field,
         label,
         unit,
