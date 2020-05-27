@@ -17,7 +17,7 @@ import {
   Rate,
 } from "antd";
 import moment from "moment";
-import NutritionDisplay from "../common/NutritionDisplay";
+import NutritionTable from "../common/NutritionTable";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 
@@ -191,7 +191,7 @@ const RecipeForm = ({ recipe }) => {
           </Form.Item>
         </Col>
         <Col span={12} style={{ padding: "0 1rem" }}>
-          <NutritionDisplay nutrition={totalNutrition} />
+          <NutritionTable nutrition={totalNutrition} />
         </Col>
       </Row>
       <h3>Sections</h3>

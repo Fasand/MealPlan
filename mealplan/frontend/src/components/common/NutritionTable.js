@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
 
-const NutritionDisplay = ({ nutrition, toFixed = 1, ...props }) => {
+const NutritionTable = ({ nutrition, toFixed = 1, ...props }) => {
   const fields = [
     ["Protein", "protein", "g"],
     ["Fat", "total_lipid_fat", "g"],
@@ -40,4 +40,4 @@ const NutritionDisplay = ({ nutrition, toFixed = 1, ...props }) => {
   );
 };
 
-export default NutritionDisplay;
+export default NutritionTable;
