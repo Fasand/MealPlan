@@ -1,5 +1,6 @@
 import os
 import re
+import time
 import pandas as pd
 from django.conf import settings
 
@@ -73,8 +74,12 @@ def load_nutrient_definitions():
                         for nutrient in nutrients.iloc]
     nutrients['percentage'] = (nutrients['num'] / num_ingredients) * 100.0
     # Generate the variable name used for field definition
-    nutrients['var_name'] = [get_nutrient_variable_name(n)
-                             for n in nutrients['name']]
+    nutrients['var_name'] = [
+        # Special condition because "Energy" appears twice
+        'energy_kj' if n['id'] == 1062
+        else get_nutrient_variable_name(n['name'])
+        for n in nutrients.iloc
+    ]
     return nutrients
 
 
@@ -218,10 +223,20 @@ def import_ingredients():
         FOOD, usecols=['fdc_id', 'description', 'food_category_id'])
     ingredients_created = 0
     total_ingredients = len(ingredients)
+    # Set up timing
+    time_start = time.time()
+    time_last_100 = time.time()
     for i, ingredient in enumerate(ingredients.iloc):
         # Print progress
         if i % 100 == 0:
+            time_cur = time.time()
+            from_start = time_cur - time_start
+            from_last = time_cur - time_last_100
+            estimated = (total_ingredients - i)/100 * from_last
             print(f"Ingredients imported: {i:>5} / {total_ingredients}")
+            print(f"Time since\tstart: {from_start:.2f}\t"
+                  f"last: {from_last:.2f}\t estimated: {estimated:.2f}")
+            time_last_100 = time.time()
         usda_fdc_id = ingredient['fdc_id']
         title = ingredient['description']
         # Find category by usda_id, must exist! (if not, throw error)
@@ -234,8 +249,11 @@ def import_ingredients():
             category=category,
         )
         ingredients_created += created
-        # Create Nutrition
-        nutrition = Nutrition(ingredient=ingredient)
+        # Create or get Nutrition
+        if hasattr(ingredient, "nutrition"):
+            nutrition = ingredient.nutrition
+        else:
+            nutrition = Nutrition(ingredient=ingredient)
         # Get nutrients for the specific Ingredient
         nutrients = food_nutrients[food_nutrients['fdc_id'] == usda_fdc_id]
         for nutrient in nutrients.iloc:

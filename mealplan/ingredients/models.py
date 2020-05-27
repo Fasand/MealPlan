@@ -48,7 +48,6 @@ class Ingredient(BaseModel):
         # Replace most fields with those in USDA
         self.category = usda.category
         self.density = usda.density
-        self.usda_fdc_id = usda.usda_fdc_id
         # Replace nutrition completely by cloning target nutrition
         if hasattr(self, "nutrition"):
             self.nutrition.delete()

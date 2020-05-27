@@ -25,6 +25,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         required=False, allow_null=True)
     units = IngredientUnitSerializer(many=True, required=False)
     tags = TagField(required=False)
+    density = serializers.FloatField(required=False, allow_null=True)
 
     def create(self, validated_data):
         nutrition_data = validated_data.pop('nutrition', {})

@@ -17,6 +17,7 @@ import {
   Rate,
 } from "antd";
 import moment from "moment";
+import NutritionDisplay from "../common/NutritionDisplay";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 
@@ -27,6 +28,7 @@ const DURATION_FORMAT = "HH:mm:ss";
 const RecipeForm = ({ recipe }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const [totalNutrition, setTotalNutrition] = useState();
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
   const units = useSelector((state) => state.ingredients.units);
@@ -36,6 +38,12 @@ const RecipeForm = ({ recipe }) => {
     dispatch(getIngredients());
     dispatch(getIngredientUnits());
   }, []);
+
+  useEffect(() => {
+    // Compute the initial nutrition from provided recipe
+    if (userIngredients.length > 0 && units.length > 0 && recipe)
+      setTotalNutrition(computeTotalNutrition(recipe));
+  }, [userIngredients, units]);
 
   const formLayout = {
     labelCol: { span: 8 },
@@ -76,12 +84,9 @@ const RecipeForm = ({ recipe }) => {
     } else dispatch(createRecipe(values));
   };
 
-  const onValuesChange = (changed) => {
-    const values = form.getFieldsValue();
-    console.log(values);
+  const computeTotalNutrition = (recipe) =>
     // TODO: move to a separate nutrition lib
-
-    const nutritions = values.sections
+    recipe.sections
       .map((section) =>
         section
           ? section.ingredients.map((i) => {
@@ -106,26 +111,24 @@ const RecipeForm = ({ recipe }) => {
       )
       // Flatten and remove empty dictionaries
       .flat()
-      .filter((i) => Object.keys(i).length != 0);
-
-    const totalNutrition = nutritions.reduce((acc, cur) => {
-      return Object.fromEntries(
-        Object.entries(acc).map(([key, val]) => {
-          // Both numbers, return sum
-          if (typeof val == "number" && typeof cur[key] == "number")
-            return [key, val + cur[key]];
-          // Accumulater has a value already (number or other), leave it
-          else if (val) return [key, val];
-          // Otherwise return whatever is in the current one
-          else return [key, cur[key]];
-        })
+      .filter((i) => Object.keys(i).length != 0)
+      // Sum all nutritions
+      .reduce((acc, cur) =>
+        Object.fromEntries(
+          Object.entries(acc).map(([key, val]) => {
+            // Both numbers, return sum
+            if (typeof val == "number" && typeof cur[key] == "number")
+              return [key, val + cur[key]];
+            // Accumulater has a value already (number or other), leave it
+            else if (val) return [key, val];
+            // Otherwise return whatever is in the current one
+            else return [key, cur[key]];
+          })
+        )
       );
-    });
 
-    window.nutritions = nutritions;
-    window.totalNutrition = totalNutrition;
-    console.log(nutritions);
-    console.log(totalNutrition);
+  const onValuesChange = (changed) => {
+    setTotalNutrition(computeTotalNutrition(form.getFieldsValue()));
   };
 
   // TODO: tags should be loaded from previously created ingredients
@@ -187,8 +190,8 @@ const RecipeForm = ({ recipe }) => {
             <Input type="number" />
           </Form.Item>
         </Col>
-        <Col span={12}>
-          <h3>Nutrition</h3>
+        <Col span={12} style={{ padding: "0 1rem" }}>
+          <NutritionDisplay nutrition={totalNutrition} />
         </Col>
       </Row>
       <h3>Sections</h3>
