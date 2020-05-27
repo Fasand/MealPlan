@@ -2,8 +2,6 @@ import React from "react";
 import { Table } from "antd";
 
 const NutritionDisplay = ({ nutrition, toFixed = 1, ...props }) => {
-  if (!nutrition) return <h3>No nutrition yet</h3>;
-
   const fields = [
     ["Protein", "protein", "g"],
     ["Fat", "total_lipid_fat", "g"],
@@ -11,12 +9,15 @@ const NutritionDisplay = ({ nutrition, toFixed = 1, ...props }) => {
     ["Sugar", "sugars_total_including_nlea", "g"],
     ["Energy", "energy", "kcal"],
   ];
-  const dataSource = fields.map(([label, field, unit]) => ({
-    value: nutrition[field].toFixed(toFixed),
-    field,
-    label,
-    unit,
-  }));
+
+  const dataSource = nutrition
+    ? fields.map(([label, field, unit]) => ({
+        value: nutrition[field].toFixed(toFixed),
+        field,
+        label,
+        unit,
+      }))
+    : [];
 
   const columns = [
     { title: null, dataIndex: "label", key: "label" },
@@ -33,6 +34,7 @@ const NutritionDisplay = ({ nutrition, toFixed = 1, ...props }) => {
       pagination={false}
       size="middle"
       bordered
+      loading={!nutrition}
       {...props}
     />
   );
