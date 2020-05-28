@@ -28,6 +28,7 @@ const DURATION_FORMAT = "HH:mm:ss";
 const RecipeForm = ({ recipe }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const [numServings, setNumServings] = useState(null);
   const [totalNutrition, setTotalNutrition] = useState(null);
   const durationTypes = useSelector((state) => state.recipes.duration_types);
   const userIngredients = useSelector((state) => state.ingredients.ingredients);
@@ -41,8 +42,10 @@ const RecipeForm = ({ recipe }) => {
 
   useEffect(() => {
     // Compute the initial nutrition from provided recipe
-    if (userIngredients.length > 0 && units.length > 0 && recipe)
+    if (userIngredients.length > 0 && units.length > 0 && recipe) {
       setTotalNutrition(computeTotalNutrition(recipe));
+      setNumServings(recipe.servings);
+    }
   }, [userIngredients, units]);
 
   const formLayout = {
@@ -84,31 +87,35 @@ const RecipeForm = ({ recipe }) => {
     } else dispatch(createRecipe(values));
   };
 
-  const computeTotalNutrition = (recipe) => {
+  const computeTotalNutrition = (recipeObject) => {
     // TODO: move to a separate nutrition lib
-    const nutritions = recipe.sections
-      .map((section) =>
-        section && section.ingredients
-          ? section.ingredients.map((i) => {
-              // Only compute anything if data is present
-              if (!(i && i.ingredient && i.unit && i.amount)) return {};
-              // Find the necessary data in state
-              const ingredient = userIngredients.find(
-                (x) => x.id == i.ingredient
-              );
-              const unit = units.find((u) => u.id == i.unit);
-              // TODO: will need to convert to weight units for this
-              const inGrams = unit.amount_in_base * i.amount;
-              const multiplier = inGrams / 100.0;
-              // Compute scaled nutrition
-              return Object.fromEntries(
-                Object.entries(ingredient.nutrition).map(([key, val]) =>
-                  typeof val == "number" ? [key, val * multiplier] : [key, val]
-                )
-              );
-            })
-          : []
-      )
+    const nutritions = (recipeObject.sections
+      ? recipeObject.sections.map((section) =>
+          section && section.ingredients
+            ? section.ingredients.map((i) => {
+                // Only compute anything if data is present
+                if (!(i && i.ingredient && i.unit && i.amount)) return {};
+                // Find the necessary data in state
+                const ingredient = userIngredients.find(
+                  (x) => x.id == i.ingredient
+                );
+                const unit = units.find((u) => u.id == i.unit);
+                // TODO: will need to convert to weight units for this
+                const inGrams = unit.amount_in_base * i.amount;
+                const multiplier = inGrams / 100.0;
+                // Compute scaled nutrition
+                return Object.fromEntries(
+                  Object.entries(ingredient.nutrition).map(([key, val]) =>
+                    typeof val == "number"
+                      ? [key, val * multiplier]
+                      : [key, val]
+                  )
+                );
+              })
+            : []
+        )
+      : []
+    )
       // Flatten and remove empty dictionaries
       .flat()
       .filter((i) => Object.keys(i).length != 0);
@@ -130,8 +137,11 @@ const RecipeForm = ({ recipe }) => {
     else return null;
   };
 
-  const onValuesChange = (changed) => {
-    setTotalNutrition(computeTotalNutrition(form.getFieldsValue()));
+  const onFieldsChange = (changed) => {
+    console.log(changed);
+    const values = form.getFieldsValue();
+    setTotalNutrition(computeTotalNutrition(values));
+    setNumServings(values.servings);
   };
 
   // TODO: tags should be loaded from previously created ingredients
@@ -164,7 +174,7 @@ const RecipeForm = ({ recipe }) => {
       form={form}
       onFinish={onFinish}
       {...formLayout}
-      onValuesChange={onValuesChange}
+      onFieldsChange={onFieldsChange}
       initialValues={initialValues}>
       <Row>
         <Col span={12}>
@@ -194,7 +204,10 @@ const RecipeForm = ({ recipe }) => {
           </Form.Item>
         </Col>
         <Col span={12} style={{ padding: "0 1rem" }}>
-          <NutritionTable nutrition={totalNutrition} />
+          <NutritionTable
+            nutrition={totalNutrition}
+            numServings={numServings}
+          />
         </Col>
       </Row>
       <h3>Sections</h3>

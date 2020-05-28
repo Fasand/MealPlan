@@ -1,7 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Table } from "antd";
 
-const NutritionTable = ({ nutrition, toFixed = 1, ...props }) => {
+const NutritionTable = ({
+  nutrition,
+  numServings = null,
+  toFixed = 1,
+  ...props
+}) => {
   const fields = [
     ["Protein", "protein", "g"],
     ["Fat", "total_lipid_fat", "g"],
@@ -12,31 +17,44 @@ const NutritionTable = ({ nutrition, toFixed = 1, ...props }) => {
 
   const dataSource = nutrition
     ? fields.map(([label, field, unit]) => ({
-        value: nutrition[field] ? nutrition[field].toFixed(toFixed) : null,
+        total: nutrition[field] ? nutrition[field].toFixed(toFixed) : null,
+        serving:
+          numServings && nutrition[field]
+            ? (nutrition[field] / numServings).toFixed(toFixed)
+            : null,
         field,
         label,
         unit,
       }))
     : [];
 
-  const columns = [
-    { title: null, dataIndex: "label", key: "label" },
-    { title: null, dataIndex: "value", key: "value", align: "right" },
-    { title: null, dataIndex: "unit", key: "unit" },
-  ];
+  const { Column } = Table;
+
   return (
     <Table
       dataSource={dataSource}
-      columns={columns}
       rowKey="field"
       title={() => <h4>Nutrition</h4>}
-      showHeader={false}
       pagination={false}
       size="middle"
       bordered
       loading={!nutrition}
-      {...props}
-    />
+      {...props}>
+      <Column dataIndex="label" key="label" />
+      {numServings && (
+        <Fragment>
+          <Column
+            title="Serving"
+            dataIndex="serving"
+            key="serving"
+            align="right"
+          />
+          <Column dataIndex="unit" key="unit_serving" width="3rem" />
+        </Fragment>
+      )}
+      <Column title="Total" dataIndex="total" key="total" align="right" />
+      <Column dataIndex="unit" key="unit_total" width="3rem" />
+    </Table>
   );
 };
 
