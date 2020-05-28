@@ -11,6 +11,11 @@ const RecipeTable = ({ recipes }) => {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      render: (_, record) => (
+        <Link to={reverse(routes.recipes.detail.detail, { id: record.id })}>
+          {record.title}
+        </Link>
+      ),
     },
     {
       title: "Description",

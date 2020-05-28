@@ -20,6 +20,7 @@ import moment from "moment";
 import NutritionTable from "../common/NutritionTable";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
+import { computeTotalNutrition } from "../../utils/nutrition";
 
 // TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
 
@@ -43,7 +44,7 @@ const RecipeForm = ({ recipe }) => {
   useEffect(() => {
     // Compute the initial nutrition from provided recipe
     if (userIngredients.length > 0 && units.length > 0 && recipe) {
-      setTotalNutrition(computeTotalNutrition(recipe));
+      setTotalNutrition(computeTotalNutrition(recipe, userIngredients, units));
       setNumServings(recipe.servings);
     }
   }, [userIngredients, units]);
@@ -87,61 +88,18 @@ const RecipeForm = ({ recipe }) => {
     } else dispatch(createRecipe(values));
   };
 
-  const computeTotalNutrition = (recipeObject) => {
-    // TODO: move to a separate nutrition lib
-    const nutritions = (recipeObject.sections
-      ? recipeObject.sections.map((section) =>
-          section && section.ingredients
-            ? section.ingredients.map((i) => {
-                // Only compute anything if data is present
-                if (!(i && i.ingredient && i.unit && i.amount)) return {};
-                // Find the necessary data in state
-                const ingredient = userIngredients.find(
-                  (x) => x.id == i.ingredient
-                );
-                const unit = units.find((u) => u.id == i.unit);
-                // TODO: will need to convert to weight units for this
-                const inGrams = unit.amount_in_base * i.amount;
-                const multiplier = inGrams / 100.0;
-                // Compute scaled nutrition
-                return Object.fromEntries(
-                  Object.entries(ingredient.nutrition).map(([key, val]) =>
-                    typeof val == "number"
-                      ? [key, val * multiplier]
-                      : [key, val]
-                  )
-                );
-              })
-            : []
-        )
-      : []
-    )
-      // Flatten and remove empty dictionaries
-      .flat()
-      .filter((i) => Object.keys(i).length != 0);
-    // Sum all nutritions or return null
-    if (nutritions.length > 0)
-      return nutritions.reduce((acc, cur) =>
-        Object.fromEntries(
-          Object.entries(acc).map(([key, val]) => {
-            // Both numbers, return sum
-            if (typeof val == "number" && typeof cur[key] == "number")
-              return [key, val + cur[key]];
-            // Accumulater has a value already (number or other), leave it
-            else if (val) return [key, val];
-            // Otherwise return whatever is in the current one
-            else return [key, cur[key]];
-          })
-        )
-      );
-    else return null;
-  };
-
   const onFieldsChange = (changed) => {
-    console.log(changed);
-    const values = form.getFieldsValue();
-    setTotalNutrition(computeTotalNutrition(values));
-    setNumServings(values.servings);
+    // Only update when specific fields change
+    const shouldUpdate = changed.some((c) =>
+      ["servings", "ingredient", "amount", "unit"].some((x) =>
+        c.name.includes(x)
+      )
+    );
+    if (shouldUpdate) {
+      const values = form.getFieldsValue();
+      setTotalNutrition(computeTotalNutrition(values, userIngredients, units));
+      setNumServings(values.servings);
+    }
   };
 
   // TODO: tags should be loaded from previously created ingredients

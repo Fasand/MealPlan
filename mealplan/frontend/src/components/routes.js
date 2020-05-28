@@ -11,6 +11,7 @@ export default {
   recipes: include("/recipes/", {
     list: "",
     detail: include(":id/", {
+      detail: "",
       edit: "edit/",
     }),
   }),

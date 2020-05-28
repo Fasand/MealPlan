@@ -20,6 +20,7 @@ import store from "../store";
 import { loadUser } from "../actions/auth";
 
 import { Layout } from "antd";
+import RecipeDetail from "./recipes/RecipeDetail";
 
 // Alert Options
 const alertOptions = {
@@ -62,6 +63,11 @@ export const App = (props) => {
                 exact
                 path={routes.recipes.detail.edit}
                 component={EditRecipe}
+              />
+              <PrivateRoute
+                exact
+                path={routes.recipes.detail.detail}
+                component={RecipeDetail}
               />
               <Route exact path={routes.auth.logout} component={Logout} />
               <Route exact path={routes.auth.register} component={Register} />

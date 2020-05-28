@@ -34,7 +34,9 @@ const NutritionTable = ({
     <Table
       dataSource={dataSource}
       rowKey="field"
-      title={() => <h4>Nutrition</h4>}
+      title={() => (
+        <h4>Nutrition{numServings && ` (${numServings} servings)`}</h4>
+      )}
       pagination={false}
       size="middle"
       bordered
