@@ -90,12 +90,18 @@ const RecipeForm = ({ recipe }) => {
   };
 
   const onFieldsChange = (changed) => {
-    // Only update when specific fields change
-    const shouldUpdate = changed.some((c) =>
-      ["servings", "ingredient", "amount", "unit"].some((x) =>
-        c.name.includes(x)
-      )
-    );
+    // Only update when specific fields change or a section is deleted
+    const sectionChanged =
+      changed[0] &&
+      changed[0].name.length == 1 &&
+      changed[0].name[0] == "sections";
+    const shouldUpdate =
+      sectionChanged ||
+      changed.some((c) =>
+        ["servings", "ingredient", "amount", "unit"].some((x) =>
+          c.name.includes(x)
+        )
+      );
     if (shouldUpdate) {
       const values = form.getFieldsValue();
       setTotalNutrition(computeRecipeNutrition(values, userIngredients, units));
