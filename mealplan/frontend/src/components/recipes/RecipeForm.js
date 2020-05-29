@@ -23,6 +23,7 @@ import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 import { computeTotalNutrition } from "../../utils/nutrition";
 
 // TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
+// TODO: or rather https://ant.design/components/select/#components-select-demo-custom-dropdown-menu
 
 const DURATION_FORMAT = "HH:mm:ss";
 
