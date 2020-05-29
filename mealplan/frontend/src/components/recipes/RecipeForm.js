@@ -20,7 +20,7 @@ import moment from "moment";
 import NutritionTable from "../common/NutritionTable";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
-import { computeTotalNutrition } from "../../utils/nutrition";
+import { computeRecipeNutrition } from "../../utils/nutrition";
 
 // TODO: Closest thing to a "create empty": https://codesandbox.io/s/headless-silence-ky32o?fontsize=14&hidenavigation=1&theme=dark&file=/src/ModifiedSelect.js
 // TODO: or rather https://ant.design/components/select/#components-select-demo-custom-dropdown-menu
@@ -45,7 +45,7 @@ const RecipeForm = ({ recipe }) => {
   useEffect(() => {
     // Compute the initial nutrition from provided recipe
     if (userIngredients.length > 0 && units.length > 0 && recipe) {
-      setTotalNutrition(computeTotalNutrition(recipe, userIngredients, units));
+      setTotalNutrition(computeRecipeNutrition(recipe, userIngredients, units));
       setNumServings(recipe.servings);
     }
   }, [userIngredients, units]);
@@ -98,7 +98,7 @@ const RecipeForm = ({ recipe }) => {
     );
     if (shouldUpdate) {
       const values = form.getFieldsValue();
-      setTotalNutrition(computeTotalNutrition(values, userIngredients, units));
+      setTotalNutrition(computeRecipeNutrition(values, userIngredients, units));
       setNumServings(values.servings);
     }
   };

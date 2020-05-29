@@ -14,6 +14,7 @@ export default {
       detail: "",
       edit: "edit/",
     }),
+    planner: "planner/",
   }),
   auth: include("/", {
     logout: "logout/",

@@ -4,6 +4,9 @@ import { getRecipes } from "../../actions/recipes";
 import RecipeForm from "./RecipeForm";
 import { Row, Col, Collapse } from "antd";
 import RecipesTable from "./RecipesTable";
+import { Link } from "react-router-dom";
+import { reverse } from "named-urls";
+import routes from "../routes";
 
 const Recipes = (_) => {
   const dispatch = useDispatch();
@@ -17,6 +20,7 @@ const Recipes = (_) => {
   return (
     <div>
       <h1>Recipes</h1>
+      <Link to={reverse(routes.recipes.planner)}>Recipe Planner</Link>
       <Row justify="center">
         <Col span={24}>
           <Collapse defaultActiveKey={1}>

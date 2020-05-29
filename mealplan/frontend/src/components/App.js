@@ -21,6 +21,7 @@ import { loadUser } from "../actions/auth";
 
 import { Layout } from "antd";
 import RecipeDetail from "./recipes/RecipeDetail";
+import RecipePlanner from "./recipes/RecipePlanner";
 
 // Alert Options
 const alertOptions = {
@@ -61,13 +62,18 @@ export const App = (props) => {
               />
               <PrivateRoute
                 exact
-                path={routes.recipes.detail.edit}
-                component={EditRecipe}
+                path={routes.recipes.planner}
+                component={RecipePlanner}
               />
               <PrivateRoute
                 exact
                 path={routes.recipes.detail.detail}
                 component={RecipeDetail}
+              />
+              <PrivateRoute
+                exact
+                path={routes.recipes.detail.edit}
+                component={EditRecipe}
               />
               <Route exact path={routes.auth.logout} component={Logout} />
               <Route exact path={routes.auth.register} component={Register} />

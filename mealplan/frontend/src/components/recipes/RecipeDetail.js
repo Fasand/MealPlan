@@ -5,7 +5,7 @@ import { getRecipe, getDurationTypes } from "../../actions/recipes";
 import { getIngredients, getIngredientUnits } from "../../actions/ingredients";
 import Loading from "../common/Loading";
 import { Row, Col, Card } from "antd";
-import { computeTotalNutrition } from "../../utils/nutrition";
+import { computeRecipeNutrition } from "../../utils/nutrition";
 import NutritionTable from "../common/NutritionTable";
 
 const BORDER_BOTTOM = { borderBottom: "1px solid black" };
@@ -29,7 +29,7 @@ const RecipeDetail = (props) => {
 
   useEffect(() => {
     if (recipe && userIngredients.length > 0 && units.length > 0)
-      setTotalNutrition(computeTotalNutrition(recipe, userIngredients, units));
+      setTotalNutrition(computeRecipeNutrition(recipe, userIngredients, units));
   }, [userIngredients, units]);
 
   const SectionRow = ({ section, recipe }) => {
