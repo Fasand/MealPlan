@@ -38,48 +38,14 @@ const RecipePlanner = (props) => {
       // Find the full recipe
       const recipe = userRecipes.find((ur) => ur.id == r.recipe);
       const scale =
-        r.servings && recipe.servings ? r.servings / recipe.servings : 1;
+        r.servings && recipe && recipe.servings
+          ? r.servings / recipe.servings
+          : 1;
       const nutrition = computeRecipeNutrition(recipe, userIngredients, units);
       return nutrition ? scaleNutrition(nutrition, scale) : null;
     });
     setTotalNutrition(sumNutritions(nutritions));
   };
-
-  const RecipeItem = ({ recipe, removeRecipe }) => (
-    <Row key={recipe.key}>
-      <Col span={8}>
-        <Form.Item
-          wrapperCol={{ span: 24 }}
-          key={[recipe.key, "recipe"]}
-          fieldKey={[recipe.fieldKey, "recipe"]}
-          name={[recipe.name, "recipe"]}>
-          <Select showSearch optionFilterProp="children">
-            {userRecipes.map((r) => (
-              <Select.Option key={r.id}>
-                {r.title}
-                {r.servings && ` (${r.servings} servings)`}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Col>
-      <Col span={4}>
-        <Form.Item
-          wrapperCol={{ span: 24 }}
-          key={[recipe.key, "servings"]}
-          fieldKey={[recipe.fieldKey, "servings"]}
-          name={[recipe.name, "servings"]}>
-          <Input placeholder="Servings" type="number" />
-        </Form.Item>
-      </Col>
-      <Col span={1}>
-        <MinusCircleOutlined
-          style={{ margin: "0 8px" }}
-          onClick={() => removeRecipe(recipe.name)}
-        />
-      </Col>
-    </Row>
-  );
 
   const initialValues = { recipes: [{}] };
 
@@ -99,11 +65,39 @@ const RecipePlanner = (props) => {
           {(recipes, { add: addRecipe, remove: removeRecipe }) => (
             <div>
               {recipes.map((recipe) => (
-                <RecipeItem
-                  recipe={recipe}
-                  removeRecipe={removeRecipe}
-                  key={`recipe_item_${recipe.name}`}
-                />
+                <Row key={recipe.key}>
+                  <Col span={8}>
+                    <Form.Item
+                      wrapperCol={{ span: 24 }}
+                      key={[recipe.key, "recipe"]}
+                      fieldKey={[recipe.fieldKey, "recipe"]}
+                      name={[recipe.name, "recipe"]}>
+                      <Select showSearch optionFilterProp="children">
+                        {userRecipes.map((r) => (
+                          <Select.Option key={r.id}>
+                            {r.title}
+                            {r.servings && ` (${r.servings} servings)`}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={4}>
+                    <Form.Item
+                      wrapperCol={{ span: 24 }}
+                      key={[recipe.key, "servings"]}
+                      fieldKey={[recipe.fieldKey, "servings"]}
+                      name={[recipe.name, "servings"]}>
+                      <Input placeholder="Servings" type="number" allowClear />
+                    </Form.Item>
+                  </Col>
+                  <Col span={1}>
+                    <MinusCircleOutlined
+                      style={{ margin: "0 8px" }}
+                      onClick={() => removeRecipe(recipe.name)}
+                    />
+                  </Col>
+                </Row>
               ))}
               <Form.Item wrapperCol={{ span: 24 }}>
                 <Button
